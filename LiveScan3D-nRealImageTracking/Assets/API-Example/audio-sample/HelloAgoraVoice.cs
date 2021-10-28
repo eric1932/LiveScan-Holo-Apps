@@ -46,6 +46,10 @@ public class HelloAgoraVoice : MonoBehaviour
         mRtcEngine.OnWarning += OnSDKWarningHandler;
         mRtcEngine.OnError += OnSDKErrorHandler;
         mRtcEngine.OnConnectionLost += OnConnectionLostHandler;
+
+        // volume adjustment
+        mRtcEngine.AdjustPlaybackSignalVolume(400);
+        mRtcEngine.AdjustAudioMixingVolume(400);
     }
 
     void JoinChannel() 
