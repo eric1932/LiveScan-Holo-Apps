@@ -30,9 +30,13 @@ public class MyExceptionHandler : MonoBehaviour
         if (type == LogType.Exception)
         {
             //handle here
-            gameObject.SetActive(false);  // disable self
-            Instantiate(ErrorTextPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
-            Destroy(gameObject);  // destroy self
+
+            //gameObject.SetActive(false);  // disable self
+            //Instantiate(ErrorTextPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
+            //Destroy(gameObject);  // destroy self
+
+            // new method
+            ErrorTextPrefab.GetComponent<MyConnectionHandler>().setPrefabActive(false);
         }
     }
 }

@@ -50,8 +50,8 @@ public class PointCloudRenderer : MonoBehaviour
             AddElems(nChunks - elems.Count);
         if (elems.Count > nChunks)
             RemoveElems(elems.Count - nChunks);
-        Debug.Assert(elems.Count == nChunks);
-        Debug.Log(nChunks);
+        //Debug.Assert(elems.Count == nChunks);
+        //Debug.Log(nChunks);
 
         int offset = 0;
         for (int i = 0; i < nChunks; i++)
@@ -65,7 +65,7 @@ public class PointCloudRenderer : MonoBehaviour
 
             // if (offset >= maxNumPoints) break;
         }
-        Debug.Log(offset);
+        //Debug.Log(offset);
     }
 
     void AddElems(int nElems)
