@@ -44,6 +44,7 @@ public class MyConnectionHandler : MonoBehaviour
 
                         instance = Instantiate(pointCloudRenderer) as GameObject;
                         instance.transform.parent = gameObject.transform.parent;
+                        instance.transform.position += new Vector3(0, 0, 0.4f);  // TODO temp fix: move 0.4m further
                         instance.SetActive(true);
                         connected = true;
 
