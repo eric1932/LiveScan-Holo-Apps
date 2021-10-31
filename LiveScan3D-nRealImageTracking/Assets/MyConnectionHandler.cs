@@ -7,14 +7,15 @@ using System.Net.Sockets;
 public class MyConnectionHandler : MonoBehaviour
 {
     private float nextActionTime = 0.0f;
-    public float period = 2f;
+
     public GameObject pointCloudRenderer;
+    private float checkPeriod = 1f;
     private bool connected = false;
     private GameObject instance;
 
-    public string host = "127.0.0.1";
-    public int port = 48002;
-    public TimeSpan timeout = new TimeSpan(0, 0, 1);
+    private string host = Constants.serverHostName;
+    private int port = Constants.port;
+    private TimeSpan timeout = TimeSpan.FromMilliseconds(250);
 
     // Start is called before the first frame update
     void Start()
@@ -28,7 +29,7 @@ public class MyConnectionHandler : MonoBehaviour
         // https://answers.unity.com/questions/17131/execute-code-every-x-seconds-with-update.html
         if (Time.time > nextActionTime)
         {
-            nextActionTime += period;
+            nextActionTime += checkPeriod;
             // execute block of code here
             if (!connected)
             {

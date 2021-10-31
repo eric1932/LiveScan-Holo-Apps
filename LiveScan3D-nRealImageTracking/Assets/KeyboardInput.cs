@@ -30,19 +30,20 @@ public class KeyboardInput : MonoBehaviour {
         // #endif
 
 
-        #if UNITY_EDITOR
-            if (keyboardDone != null)
-                keyboardDone.Invoke("127.0.0.1");
-#else
-            if (keyboardDone != null)
-                // ASUS Router
-                // keyboardDone.Invoke("192.168.1.81");  // MacBook
-                // keyboardDone.Invoke("192.168.1.77");  // Lenovo
-                // Huawei Router
-                // keyboardDone.Invoke("192.168.3.3");  // Lenovo
-                // Vultr
-                keyboardDone.Invoke("139.180.141.82");
-#endif
+        //#if UNITY_EDITOR
+        //            if (keyboardDone != null)
+        //                keyboardDone.Invoke("127.0.0.1");
+        //#else
+        //            if (keyboardDone != null)
+        //                // ASUS Router
+        //                // keyboardDone.Invoke("192.168.1.81");  // MacBook
+        //                // keyboardDone.Invoke("192.168.1.77");  // Lenovo
+        //                // Huawei Router
+        //                // keyboardDone.Invoke("192.168.3.3");  // Lenovo
+        //                // Vultr
+        //                keyboardDone.Invoke("139.180.141.82");
+        //#endif
+        keyboardDone.Invoke(Constants.serverHostName);
     }
 
     // void Update ()
