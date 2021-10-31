@@ -9,13 +9,13 @@ public class MyConnectionHandler : MonoBehaviour
     private float nextActionTime = 0.0f;
 
     public GameObject pointCloudRenderer;
-    private float checkPeriod = 1f;
+    private float checkPeriod = 2f;
     private bool connected = false;
     private GameObject instance;
 
     private string host = Constants.serverHostName;
     private int port = Constants.port;
-    private TimeSpan timeout = TimeSpan.FromMilliseconds(250);
+    private TimeSpan timeout = TimeSpan.FromMilliseconds(100);
 
     // Start is called before the first frame update
     void Start()
