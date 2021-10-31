@@ -41,6 +41,7 @@ public class PointCloudReceiver : MonoBehaviour
         float[] vertices;
         byte[] colors;
 
+        // eric code
         if (NRInput.IsTouching()) return;  // If touching trackpad, do not render
 
         if (bReadyForNextFrame)
@@ -78,6 +79,10 @@ public class PointCloudReceiver : MonoBehaviour
         socket = new NetworkCommunication.TransferSocket(IP, port);
 #else
         socket = new TcpClient(IP, port);
+
+        // eric code
+        // shorten socket timeout
+        socket.ReceiveTimeout = 250;
 #endif
         bConnected = true;
         //Debug.Log("Connected");
