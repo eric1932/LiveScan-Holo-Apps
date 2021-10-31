@@ -33,7 +33,7 @@ public class KeyboardInput : MonoBehaviour {
         #if UNITY_EDITOR
             if (keyboardDone != null)
                 keyboardDone.Invoke("127.0.0.1");
-        #else
+#else
             if (keyboardDone != null)
                 // ASUS Router
                 // keyboardDone.Invoke("192.168.1.81");  // MacBook
@@ -42,10 +42,10 @@ public class KeyboardInput : MonoBehaviour {
                 // keyboardDone.Invoke("192.168.3.3");  // Lenovo
                 // Vultr
                 keyboardDone.Invoke("139.180.141.82");
-        #endif
+#endif
     }
-	
-	// void Update ()
+
+    // void Update ()
     // {
     //     if (TouchScreenKeyboard.visible == false && keyboard != null)
     //     {
