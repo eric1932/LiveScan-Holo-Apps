@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.Net.Sockets;
 
 public class MyConnectionHandler : MonoBehaviour
 {
@@ -9,6 +11,10 @@ public class MyConnectionHandler : MonoBehaviour
     public GameObject pointCloudRenderer;
     private bool connected = false;
     private GameObject instance;
+
+    public string host = "127.0.0.1";
+    public int port = 48002;
+    public TimeSpan timeout = new TimeSpan(0, 0, 1);
 
     // Start is called before the first frame update
     void Start()
@@ -26,11 +32,28 @@ public class MyConnectionHandler : MonoBehaviour
             // execute block of code here
             if (!connected)
             {
-                instance = Instantiate(pointCloudRenderer) as GameObject;
-                instance.transform.parent = gameObject.transform.parent;
-                instance.SetActive(true);
-                Debug.Log("inst instance");
-                connected = true;
+                try
+                {
+                    using (var client = new TcpClient())
+                    {
+                        var result = client.BeginConnect(host, port, null, null);
+                        var success = result.AsyncWaitHandle.WaitOne(timeout);
+                        client.EndConnect(result);
+
+
+                        instance = Instantiate(pointCloudRenderer) as GameObject;
+                        instance.transform.parent = gameObject.transform.parent;
+                        instance.SetActive(true);
+                        connected = true;
+
+                        Debug.Log("port open; activate");
+                    }
+                }
+                catch
+                {
+                    Debug.Log("port not open");
+                    // return;
+                }
             }
         }
 
