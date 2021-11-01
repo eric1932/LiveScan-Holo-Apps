@@ -82,7 +82,7 @@ public class PointCloudReceiver : MonoBehaviour
 
         // eric code
         // shorten socket timeout
-        socket.ReceiveTimeout = 250;
+        //socket.ReceiveTimeout = 250;
 #endif
         bConnected = true;
         //Debug.Log("Connected");
