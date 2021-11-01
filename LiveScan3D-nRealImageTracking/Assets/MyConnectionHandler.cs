@@ -11,19 +11,23 @@ public class MyConnectionHandler : MonoBehaviour
 
     public GameObject pointCloudRenderer;
     private float checkPeriod = 2f;
-    private bool connected = false;
     private bool portOpen = false;
-    private GameObject instance;
+    private GameObject instance = null;
 
     private string host = Constants.serverHostName;
     private int port = Constants.port;
     private TimeSpan timeout = TimeSpan.FromMilliseconds(100);
     private Thread threadPortChecker = null;
 
+    private GameObject TextSystemConnecting;
+
+    private bool FlagShouldRunning = false;
+
     // Start is called before the first frame update
     void Start()
     {
         threadPortChecker = new Thread(PortChecker);
+        TextSystemConnecting = GameObject.Find("/MyTextButtonSystemConnecting");
     }
 
     // Update is called once per frame
@@ -34,41 +38,52 @@ public class MyConnectionHandler : MonoBehaviour
         {
             nextActionTime += checkPeriod;
             // execute block of code here
-            if (!connected)
+            if (instance == null)
             {
+                if (FlagShouldRunning)
+                {
+                    portOpen = false;
+                    FlagShouldRunning = false;
+                }
+
                 if (!threadPortChecker.IsAlive)
                 {
                     threadPortChecker = new Thread(PortChecker);
                     threadPortChecker.Start();
                 }
+
                 if (portOpen)
                 {
                     instance = Instantiate(pointCloudRenderer) as GameObject;
                     instance.transform.parent = gameObject.transform.parent;
                     instance.transform.position += new Vector3(0, 0, 0.4f);  // TODO temp fix: move 0.4m further
                     instance.SetActive(true);
-                    connected = true;
+                    Debug.Log("INST");
+                    portOpen = false;
+                    FlagShouldRunning = true;
                 }
             }
         }
 
-        if (connected)
+        // status update
+        if (instance != null)
         {
             // hide self text
-            gameObject.transform.GetChild(0).gameObject.SetActive(false);
+            if (TextSystemConnecting)
+                TextSystemConnecting.SetActive(false);
         }
         else
         {
             // show self text
-            gameObject.transform.GetChild(0).gameObject.SetActive(true);
+            if (TextSystemConnecting)
+                TextSystemConnecting.SetActive(true);
         }
     }
 
     public void setPrefabActive(bool active)
     {
         Debug.Log("setactive" + active);
-        connected = active;
-        if (!connected)
+        if (!active)
         {
             if (instance != null)  // not destroyed yet
                 Destroy(instance);
@@ -79,6 +94,7 @@ public class MyConnectionHandler : MonoBehaviour
 
     void PortChecker()
     {
+        portOpen = false;
         try
         {
             using (var client = new TcpClient())
@@ -93,7 +109,6 @@ public class MyConnectionHandler : MonoBehaviour
         catch
         {
             Debug.Log("port not open");
-            portOpen = false;
             //return;
         }
     }

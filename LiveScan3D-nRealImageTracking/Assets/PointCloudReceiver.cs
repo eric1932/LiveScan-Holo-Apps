@@ -82,7 +82,9 @@ public class PointCloudReceiver : MonoBehaviour
         {
             Debug.Log("socket or else error; show error text; destroy self");
             // custom error handler
-            ConnectionHandlerPrefab.GetComponent<MyConnectionHandler>().setPrefabActive(false);
+            //ConnectionHandlerPrefab.GetComponent<MyConnectionHandler>().setPrefabActive(false);
+            // destroy pointcloudrenderer
+            Destroy(gameObject);
         }
     }
 
