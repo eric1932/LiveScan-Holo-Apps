@@ -28,6 +28,9 @@ public class PointCloudReceiver : MonoBehaviour
 
     // private System.DateTime time = System.DateTime.Now;
 
+    // eric code
+    public GameObject ConnectionHandlerPrefab;
+
     void Start()
     {
         pointCloudRenderer = GetComponent<PointCloudRenderer>();
@@ -44,32 +47,42 @@ public class PointCloudReceiver : MonoBehaviour
         // eric code
         if (NRInput.IsTouching()) return;  // If touching trackpad, do not render
 
-        if (bReadyForNextFrame)
+        // eric code
+        try
         {
-            //Debug.Log("Requesting frame");
-            // TimeSpan ts = System.DateTime.Now.Subtract(time);
-            // if (ts.Seconds < 0.2) {
-            //     return;
-            // }
+            if (bReadyForNextFrame)
+            {
+                //Debug.Log("Requesting frame");
+                // TimeSpan ts = System.DateTime.Now.Subtract(time);
+                // if (ts.Seconds < 0.2) {
+                //     return;
+                // }
 
 #if WINDOWS_UWP
             socket.RequestFrame();
             socket.ReceiveFrameAsync();
 #else
-            RequestFrame();
+                RequestFrame();
 #endif
-            bReadyForNextFrame = false;
-        }
+                bReadyForNextFrame = false;
+            }
 
 #if WINDOWS_UWP
         if (socket.GetFrame(out vertices, out colors))
-    #else
-        if (ReceiveFrame(out vertices, out colors))
-    #endif
+#else
+            if (ReceiveFrame(out vertices, out colors))
+#endif
+            {
+                //Debug.Log("Frame received");
+                pointCloudRenderer.Render(vertices, colors);
+                bReadyForNextFrame = true;
+            }
+        }
+        catch
         {
-            //Debug.Log("Frame received");
-            pointCloudRenderer.Render(vertices, colors);
-            bReadyForNextFrame = true;
+            Debug.Log("socket or else error; show error text; destroy self");
+            // custom error handler
+            ConnectionHandlerPrefab.GetComponent<MyConnectionHandler>().setPrefabActive(false);
         }
     }
 
@@ -82,7 +95,7 @@ public class PointCloudReceiver : MonoBehaviour
 
         // eric code
         // shorten socket timeout
-        //socket.ReceiveTimeout = 250;
+        socket.ReceiveTimeout = 500;
 #endif
         bConnected = true;
         //Debug.Log("Connected");

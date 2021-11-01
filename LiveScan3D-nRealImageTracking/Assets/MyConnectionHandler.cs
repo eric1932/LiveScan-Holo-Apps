@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Net.Sockets;
+using System.Threading;
 
 public class MyConnectionHandler : MonoBehaviour
 {
@@ -11,16 +12,18 @@ public class MyConnectionHandler : MonoBehaviour
     public GameObject pointCloudRenderer;
     private float checkPeriod = 2f;
     private bool connected = false;
+    private bool portOpen = false;
     private GameObject instance;
 
     private string host = Constants.serverHostName;
     private int port = Constants.port;
     private TimeSpan timeout = TimeSpan.FromMilliseconds(100);
+    private Thread threadPortChecker = null;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        threadPortChecker = new Thread(PortChecker);
     }
 
     // Update is called once per frame
@@ -33,28 +36,18 @@ public class MyConnectionHandler : MonoBehaviour
             // execute block of code here
             if (!connected)
             {
-                try
+                if (!threadPortChecker.IsAlive)
                 {
-                    using (var client = new TcpClient())
-                    {
-                        var result = client.BeginConnect(host, port, null, null);
-                        var success = result.AsyncWaitHandle.WaitOne(timeout);
-                        client.EndConnect(result);
-
-
-                        instance = Instantiate(pointCloudRenderer) as GameObject;
-                        instance.transform.parent = gameObject.transform.parent;
-                        instance.transform.position += new Vector3(0, 0, 0.4f);  // TODO temp fix: move 0.4m further
-                        instance.SetActive(true);
-                        connected = true;
-
-                        Debug.Log("port open; activate");
-                    }
+                    threadPortChecker = new Thread(PortChecker);
+                    threadPortChecker.Start();
                 }
-                catch
+                if (portOpen)
                 {
-                    Debug.Log("port not open");
-                    // return;
+                    instance = Instantiate(pointCloudRenderer) as GameObject;
+                    instance.transform.parent = gameObject.transform.parent;
+                    instance.transform.position += new Vector3(0, 0, 0.4f);  // TODO temp fix: move 0.4m further
+                    instance.SetActive(true);
+                    connected = true;
                 }
             }
         }
@@ -77,8 +70,31 @@ public class MyConnectionHandler : MonoBehaviour
         connected = active;
         if (!connected)
         {
-            Destroy(instance);
+            if (instance != null)  // not destroyed yet
+                Destroy(instance);
             Debug.Log("destroy instance");
+            portOpen = false;
+        }
+    }
+
+    void PortChecker()
+    {
+        try
+        {
+            using (var client = new TcpClient())
+            {
+                var result = client.BeginConnect(host, port, null, null);
+                var success = result.AsyncWaitHandle.WaitOne(timeout);
+                client.EndConnect(result);
+                Debug.Log("port open");
+                portOpen = true;
+            }
+        }
+        catch
+        {
+            Debug.Log("port not open");
+            portOpen = false;
+            //return;
         }
     }
 }
