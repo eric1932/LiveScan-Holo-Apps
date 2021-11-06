@@ -13,13 +13,16 @@ public class MyConnectionHandler : MonoBehaviour
     private float checkPeriod = 2f;
     private bool portOpen = false;
     private GameObject instance = null;
+    [HideInInspector]
+    public static bool instanceNull { get { return _instanceNull; } }
+    private static bool _instanceNull = false;
 
     private string host = Constants.serverHostName;
     private int port = Constants.port;
     private TimeSpan timeout = TimeSpan.FromMilliseconds(100);
     private Thread threadPortChecker = null;
 
-    private GameObject TextSystemConnecting;
+    //private GameObject TextSystemConnecting;
 
     private bool FlagShouldRunning = false;
 
@@ -27,7 +30,7 @@ public class MyConnectionHandler : MonoBehaviour
     void Start()
     {
         threadPortChecker = new Thread(PortChecker);
-        TextSystemConnecting = GameObject.Find("/MyTextButtonSystemConnecting");
+        //TextSystemConnecting = GameObject.Find("/MyTextButtonSystemConnecting");
     }
 
     // Update is called once per frame
@@ -66,18 +69,19 @@ public class MyConnectionHandler : MonoBehaviour
         }
 
         // status update
-        if (instance != null)
-        {
-            // hide self text
-            if (TextSystemConnecting)
-                TextSystemConnecting.SetActive(false);
-        }
-        else
-        {
-            // show self text
-            if (TextSystemConnecting)
-                TextSystemConnecting.SetActive(true);
-        }
+        //if (instance != null)
+        //{
+        //    // hide self text
+        //    if (TextSystemConnecting != null)
+        //        TextSystemConnecting.SetActive(false);
+        //}
+        //else
+        //{
+        //    // show self text
+        //    if (TextSystemConnecting != null)
+        //        TextSystemConnecting.SetActive(true);
+        //}
+        _instanceNull = instance == null;
     }
 
     public void setPrefabActive(bool active)

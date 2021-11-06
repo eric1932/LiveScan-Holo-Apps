@@ -16,7 +16,8 @@ public class MyControllerListener : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (NRInput.GetButton(ControllerButton.HOME) || NRInput.GetButton(ControllerButton.APP))
+        if (NRInput.GetButton(ControllerButton.HOME) || NRInput.GetButton(ControllerButton.APP)
+            || NRInput.GetButtonDown(ControllerButton.APP))  // enhanced detection
         {
             exitWindow.SetActive(true);
         }
