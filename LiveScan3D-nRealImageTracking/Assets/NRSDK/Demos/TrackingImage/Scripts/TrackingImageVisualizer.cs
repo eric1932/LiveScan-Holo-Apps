@@ -78,7 +78,7 @@ namespace NRKernal.NRExamples
         public void Start()
         {
             // Add to root of scene instead of setting as child
-            Instantiate(Cube, new Vector3(0f, 0f, 0f), Quaternion.identity);
+            Instantiate(Cube, Vector3.zero, Quaternion.identity);
             Instantiate(AgoraVoice, Vector3.zero, Quaternion.identity);
             Destroy(gameObject);
             //Cube.SetActive(true);
