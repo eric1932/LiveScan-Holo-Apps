@@ -59,7 +59,7 @@ public class MyConnectionHandler : MonoBehaviour
                 {
                     instance = Instantiate(pointCloudRenderer) as GameObject;
                     instance.transform.parent = gameObject.transform.parent;
-                    instance.transform.position += new Vector3(0, 0, 0.5f);  // TODO temp fix: move 0.4m+0.1m further
+                    instance.transform.position += new Vector3(0, 0, 0.55f);  // TODO temp fix: move 0.4m+0.1m+0.05m further
                     instance.SetActive(true);
                     Debug.Log("INST");
                     portOpen = false;
