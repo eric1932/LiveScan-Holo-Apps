@@ -17,8 +17,8 @@ public class MyConnectionHandler : MonoBehaviour
     public static bool instanceNull { get { return _instanceNull; } }
     private static bool _instanceNull = false;
 
-    private string host = Constants.serverHostName;
-    private int port = Constants.port;
+    private string host = Constants.serverHostName;  // TODO
+    private int port = Constants.port;  // TODO
     private TimeSpan timeout = TimeSpan.FromMilliseconds(100);
     private Thread threadPortChecker = null;
 
