@@ -18,7 +18,7 @@ public class PointCloudReceiver : MonoBehaviour
 #if WINDOWS_UWP
     TransferSocket socket;
 #else
-    TcpClient socket;
+    TcpClient socket = null;
 #endif
     public int port = 48002;
 
@@ -28,12 +28,21 @@ public class PointCloudReceiver : MonoBehaviour
 
     // private System.DateTime time = System.DateTime.Now;
 
-    // eric code
+    // threaded receiver
+    float[] vertices;
+    byte[] colors;
+    private Thread receiverThread = null;
+    bool pendingRender = false;
+    bool pendingDestroy = false;
+
     public GameObject ConnectionHandlerPrefab;
 
     void Start()
     {
         pointCloudRenderer = GetComponent<PointCloudRenderer>();
+
+        receiverThread = new Thread(ThreadReceiver);
+        receiverThread.Start();
     }
 
     void Update()
@@ -41,49 +50,20 @@ public class PointCloudReceiver : MonoBehaviour
         if (!bConnected)
             return;
 
-        float[] vertices;
-        byte[] colors;
-
-        // eric code
         if (NRInput.IsTouching()) return;  // If touching trackpad, do not render
 
-        // eric code
-        try
+        // a lot of code removed here
+        // receive in thread
+
+        if (pendingRender)
         {
-            if (bReadyForNextFrame)
-            {
-                //Debug.Log("Requesting frame");
-                // TimeSpan ts = System.DateTime.Now.Subtract(time);
-                // if (ts.Seconds < 0.2) {
-                //     return;
-                // }
-
-#if WINDOWS_UWP
-            socket.RequestFrame();
-            socket.ReceiveFrameAsync();
-#else
-                RequestFrame();
-#endif
-                bReadyForNextFrame = false;
-            }
-
-#if WINDOWS_UWP
-        if (socket.GetFrame(out vertices, out colors))
-#else
-            if (ReceiveFrame(out vertices, out colors))
-#endif
-            {
-                //Debug.Log("Frame received");
-                pointCloudRenderer.Render(vertices, colors);
-                bReadyForNextFrame = true;
-            }
+            pointCloudRenderer.Render(vertices, colors);
+            bReadyForNextFrame = true;
+            pendingRender = false;
         }
-        catch
+
+        if (pendingDestroy)
         {
-            Debug.Log("socket or else error; show error text; destroy self");
-            // custom error handler
-            //ConnectionHandlerPrefab.GetComponent<MyConnectionHandler>().setPrefabActive(false);
-            // destroy pointcloudrenderer
             Destroy(gameObject);
         }
     }
@@ -160,4 +140,52 @@ public class PointCloudReceiver : MonoBehaviour
         return true;
     }
 #endif
+
+    void ThreadReceiver()
+    {
+        while (true)
+        {
+            if (socket == null || pendingRender)  // if socket not connected || pending render -> do not receive
+                continue;
+
+            // eric code
+            try
+            {
+                if (bReadyForNextFrame)  // TODO = pendingRender??
+                {
+                    //Debug.Log("Requesting frame");
+                    // TimeSpan ts = System.DateTime.Now.Subtract(time);
+                    // if (ts.Seconds < 0.2) {
+                    //     return;
+                    // }
+
+#if WINDOWS_UWP
+                    socket.RequestFrame();
+                    socket.ReceiveFrameAsync();
+#else
+                    RequestFrame();
+#endif
+                    bReadyForNextFrame = false;
+                }
+
+#if WINDOWS_UWP
+                if (socket.GetFrame(out vertices, out colors))
+#else
+                if (ReceiveFrame(out vertices, out colors))
+#endif
+                {
+                    //Debug.Log("Frame received");
+                    pendingRender = true;
+                }
+            }
+            catch
+            {
+                Debug.Log("socket or else error; show error text; destroy self");
+                // custom error handler
+                //ConnectionHandlerPrefab.GetComponent<MyConnectionHandler>().setPrefabActive(false);
+                // destroy pointcloudrenderer
+                pendingDestroy = true;
+            }
+        }
+    }
 }
