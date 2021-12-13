@@ -164,6 +164,8 @@ public class PointCloudReceiver : MonoBehaviour
                 //ConnectionHandlerPrefab.GetComponent<MyConnectionHandler>().setPrefabActive(false);
                 // destroy pointcloudrenderer
                 pendingDestroy = true;
+
+                Thread.Sleep(2000);
             }
         }
     }
