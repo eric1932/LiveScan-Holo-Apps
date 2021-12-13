@@ -1,4 +1,5 @@
 using Draco;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -17,6 +18,8 @@ public class PointCloudRenderer : MonoBehaviour
     {
         elems = new List<GameObject>();
         UpdatePointSize();
+
+        StartCoroutine("ThreadMeshRecycler");
     }
 
     void Update()
@@ -72,6 +75,17 @@ public class PointCloudRenderer : MonoBehaviour
         {
             Destroy(elems[0]);
             elems.Remove(elems[0]);
+        }
+    }
+
+    IEnumerator ThreadMeshRecycler()
+    {
+        for (; ; )
+        {
+            Debug.Log("clean unused mesh");
+            Resources.UnloadUnusedAssets();
+
+            yield return new WaitForSeconds(10f);
         }
     }
 }
