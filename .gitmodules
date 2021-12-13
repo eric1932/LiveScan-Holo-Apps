@@ -1,0 +1,3 @@
+[submodule "LiveScan3D-nRealImageTracking/Packages/DracoUnity"]
+	path = LiveScan3D-nRealImageTracking/Packages/DracoUnity
+	url = https://github.com/eric1932/DracoUnity
