@@ -1,5 +1,7 @@
-using UnityEngine;
+using Draco;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using UnityEngine;
 
 public class PointCloudRenderer : MonoBehaviour
 {
@@ -31,41 +33,18 @@ public class PointCloudRenderer : MonoBehaviour
         pointCloudMaterial.SetFloat("_PointSize", pointSize * transform.localScale.x);
     }
 
-    public void Render(float[] arrVertices, byte[] arrColors)
+    async public Task Render(byte[] dracoBytes)
     {
-        int nPoints, nChunks;
-        if (arrVertices == null || arrColors == null)
+        var draco = new DracoMeshLoader();  // TODO optimize?
+        var mesh = await draco.ConvertDracoMeshToUnity(dracoBytes);
+        if (mesh != null)
         {
-            nPoints = 0;
-            nChunks = 0;
+            // this line ensures mesh visible during zooming in
+            mesh.bounds = new UnityEngine.Bounds(transform.position, new Vector3(float.MaxValue, float.MaxValue, float.MaxValue));
+
+            GetComponent<MeshFilter>().sharedMesh = mesh;
         }
-        else
-        {
-            nPoints = arrVertices.Length / 3;
-            nChunks = 1 + nPoints / maxChunkSize;
-        }
-        
-        // makes elems has Count=nChunks
-        if (elems.Count < nChunks)
-            AddElems(nChunks - elems.Count);
-        if (elems.Count > nChunks)
-            RemoveElems(elems.Count - nChunks);
-        //Debug.Assert(elems.Count == nChunks);
-        //Debug.Log(nChunks);
-
-        int offset = 0;
-        for (int i = 0; i < nChunks; i++)
-        {
-            int nPointsToRender = System.Math.Min(maxChunkSize, nPoints - offset);
-
-            ElemRenderer renderer = elems[i].GetComponent<ElemRenderer>();
-            renderer.UpdateMesh(arrVertices, arrColors, nPointsToRender, offset);
-
-            offset += nPointsToRender;
-
-            // if (offset >= maxNumPoints) break;
-        }
-        //Debug.Log(offset);
+        Resources.UnloadUnusedAssets();  // free unused meshes; TODO occassionally call
     }
 
     void AddElems(int nElems)

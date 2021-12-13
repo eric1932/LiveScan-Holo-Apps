@@ -29,8 +29,7 @@ public class PointCloudReceiver : MonoBehaviour
     // private System.DateTime time = System.DateTime.Now;
 
     // threaded receiver
-    float[] vertices;
-    byte[] colors;
+    byte[] dracoBytes;
     private Thread receiverThread = null;
     bool pendingRender = false;
     bool pendingDestroy = false;
@@ -45,7 +44,7 @@ public class PointCloudReceiver : MonoBehaviour
         receiverThread.Start();
     }
 
-    void Update()
+    async void Update()
     {
         if (!bConnected)
             return;
@@ -57,7 +56,7 @@ public class PointCloudReceiver : MonoBehaviour
 
         if (pendingRender)
         {
-            pointCloudRenderer.Render(vertices, colors);
+            await pointCloudRenderer.Render(dracoBytes);
             bReadyForNextFrame = true;
             pendingRender = false;
         }
@@ -104,38 +103,18 @@ public class PointCloudReceiver : MonoBehaviour
         return BitConverter.ToInt32(buffer, 0);
     }
 
-    bool ReceiveFrame(out float[] lVertices, out byte[] lColors)
+    bool ReceiveFrame(out byte[] dracoBytes)
     {
         // int nPointsToRead = ReadInt();
         byte[] buffer0 = new byte[4];
         socket.GetStream().Read(buffer0, 0, 4);
-        int nPointsToRead = BitConverter.ToInt32(buffer0, 0);
-
-        lVertices = new float[3 * nPointsToRead];
-        short[] lShortVertices = new short[3 * nPointsToRead];
-        lColors = new byte[3 * nPointsToRead];
-
-
-        int nBytesToRead = sizeof(short) * 3 * nPointsToRead;
+        int nBytesToReceive = BitConverter.ToInt32(buffer0, 0);
         int nBytesRead = 0;
-        byte[] buffer = new byte[nBytesToRead];
 
-        while (nBytesRead < nBytesToRead)
-            nBytesRead += socket.GetStream().Read(buffer, nBytesRead, Math.Min(nBytesToRead - nBytesRead, 64000));
+        dracoBytes = new byte[nBytesToReceive];
 
-        System.Buffer.BlockCopy(buffer, 0, lShortVertices, 0, nBytesToRead);
-
-        for (int i = 0; i < lShortVertices.Length; i++)
-            lVertices[i] = lShortVertices[i] / 1000.0f;
-
-        nBytesToRead = sizeof(byte) * 3 * nPointsToRead;
-        nBytesRead = 0;
-        buffer = new byte[nBytesToRead];
-
-        while (nBytesRead < nBytesToRead)
-            nBytesRead += socket.GetStream().Read(buffer, nBytesRead, Math.Min(nBytesToRead - nBytesRead, 64000));
-
-        System.Buffer.BlockCopy(buffer, 0, lColors, 0, nBytesToRead);
+        while (nBytesRead < nBytesToReceive)
+            nBytesRead += socket.GetStream().Read(dracoBytes, nBytesRead, Math.Min(nBytesToReceive - nBytesRead, 64000));
 
         return true;
     }
@@ -171,7 +150,7 @@ public class PointCloudReceiver : MonoBehaviour
 #if WINDOWS_UWP
                 if (socket.GetFrame(out vertices, out colors))
 #else
-                if (ReceiveFrame(out vertices, out colors))
+                if (ReceiveFrame(out dracoBytes))
 #endif
                 {
                     //Debug.Log("Frame received");
