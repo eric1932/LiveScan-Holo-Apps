@@ -157,7 +157,7 @@ public class PointCloudReceiver : MonoBehaviour
                     pendingRender = true;
                 }
             }
-            catch
+            catch (Exception e)
             {
                 Debug.Log("socket or else error; show error text; destroy self");
                 // custom error handler
@@ -166,6 +166,8 @@ public class PointCloudReceiver : MonoBehaviour
                 pendingDestroy = true;
 
                 Thread.Sleep(2000);
+
+                Debug.LogError(e);
             }
         }
     }
