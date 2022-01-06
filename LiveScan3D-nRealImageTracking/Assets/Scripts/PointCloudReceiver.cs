@@ -35,11 +35,18 @@ public class PointCloudReceiver : MonoBehaviour
     bool pendingRender = false;
     bool pendingDestroy = false;
 
-    public GameObject ConnectionHandlerPrefab;
+    //public GameObject ConnectionHandlerPrefab;
+
+    public int multiID = -1;
+    private Vector3 position;
+    private Vector3 localPosition;
 
     void Start()
     {
         pointCloudRenderer = GetComponent<PointCloudRenderer>();
+
+        position = gameObject.transform.position;
+        localPosition = gameObject.transform.localPosition;
 
         receiverThread = new Thread(ThreadReceiver);
         receiverThread.Start();
@@ -57,7 +64,8 @@ public class PointCloudReceiver : MonoBehaviour
 
         if (pendingRender)
         {
-            pointCloudRenderer.Render(vertices, colors);
+            if (multiID == -1)  // TODO
+                pointCloudRenderer.Render(vertices, colors);
             bReadyForNextFrame = true;
             pendingRender = false;
         }
@@ -141,6 +149,19 @@ public class PointCloudReceiver : MonoBehaviour
     }
 #endif
 
+    float[] TransPoseVector(float[] v)  // TODO
+    {
+        float[] outVector = v;
+        for (int i = 0; i < v.Length / 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                outVector[i * 3 + j] += position[j] + localPosition[j];
+            }
+        }
+        return outVector;
+    }
+
     void ThreadReceiver()
     {
         while (true)
@@ -176,11 +197,39 @@ public class PointCloudReceiver : MonoBehaviour
                 {
                     //Debug.Log("Frame received");
                     pendingRender = true;
+
+                    // TODO
+                    if (multiID != -1)
+                        vertices = TransPoseVector(vertices);
+                    switch (multiID)
+                    {
+                        case 1:
+                            Constants.vert1 = vertices;
+                            Constants.col1 = colors;
+                            MultiRenderer.q.Enqueue(multiID);
+                            break;
+                        case 2:
+                            Constants.vert2 = vertices;
+                            Constants.col2 = colors;
+                            MultiRenderer.q.Enqueue(multiID);
+                            break;
+                        case 3:
+                            Constants.vert3 = vertices;
+                            Constants.col3 = colors;
+                            MultiRenderer.q.Enqueue(multiID);
+                            break;
+                        case 4:
+                            Constants.vert4 = vertices;
+                            Constants.col4 = colors;
+                            MultiRenderer.q.Enqueue(multiID);
+                            break;
+                    }
+                    // TODO end
                 }
             }
             catch
             {
-                Debug.Log("socket or else error; show error text; destroy self");
+                Debug.Log(String.Format("socket or else error; show error text; destroy self; port {0}", port));
                 // custom error handler
                 //ConnectionHandlerPrefab.GetComponent<MyConnectionHandler>().setPrefabActive(false);
                 // destroy pointcloudrenderer
