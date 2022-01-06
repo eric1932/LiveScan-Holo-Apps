@@ -206,22 +206,22 @@ public class PointCloudReceiver : MonoBehaviour
                         case 1:
                             Constants.vert1 = vertices;
                             Constants.col1 = colors;
-                            MultiRenderer.q.Enqueue(multiID);
+                            //MultiRenderer.q.Enqueue(multiID);
                             break;
                         case 2:
                             Constants.vert2 = vertices;
                             Constants.col2 = colors;
-                            MultiRenderer.q.Enqueue(multiID);
+                            //MultiRenderer.q.Enqueue(multiID);
                             break;
                         case 3:
                             Constants.vert3 = vertices;
                             Constants.col3 = colors;
-                            MultiRenderer.q.Enqueue(multiID);
+                            //MultiRenderer.q.Enqueue(multiID);
                             break;
                         case 4:
                             Constants.vert4 = vertices;
                             Constants.col4 = colors;
-                            MultiRenderer.q.Enqueue(multiID);
+                            //MultiRenderer.q.Enqueue(multiID);
                             break;
                     }
                     // TODO end

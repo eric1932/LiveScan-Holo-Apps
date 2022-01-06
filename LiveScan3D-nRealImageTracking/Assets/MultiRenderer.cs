@@ -15,7 +15,7 @@ public class MultiRenderer : MonoBehaviour
 
     int iterCount = 0;
 
-    public static ConcurrentQueue<int> q = new ConcurrentQueue<int>();
+    //public static ConcurrentQueue<int> q = new ConcurrentQueue<int>();
 
     void Start()
     {
@@ -33,55 +33,61 @@ public class MultiRenderer : MonoBehaviour
             transform.hasChanged = false;
         }
 
-        //switch (iterCount)
-        //{
-        //    case 1:
-        //        if (Constants.vert1 != null)
-        //            Render(Constants.vert1, Constants.col1, iterCount);
-        //        break;
-        //    case 2:
-        //        if (Constants.vert2 != null)
-        //            Render(Constants.vert2, Constants.col2, iterCount);
-        //        break;
-        //    case 3:
-        //        if (Constants.vert3 != null)
-        //            Render(Constants.vert3, Constants.col3, iterCount);
-        //        break;
-        //    case 4:
-        //        if (Constants.vert4 != null)
-        //            Render(Constants.vert4, Constants.col4, iterCount);
-        //        break;
-        //}
-        //iterCount += 1;
-        //if (iterCount >= 4)
-        //    iterCount = 0;
-        int idToRender;
-        if (q.TryDequeue(out idToRender))
+        //float fps = 1f / Time.smoothDeltaTime;
+        //if (fps < 60)
+        //    return;
+        if (Time.smoothDeltaTime >= 0.01)  // 0.016
+            return;
+
+        switch (iterCount)
         {
-            Debug.Log(string.Format("RenderQueue DQ: {0}", idToRender));
-            switch (idToRender)
-            {
-                case 1:
-                    if (Constants.vert1 != null)
-                        Render(Constants.vert1, Constants.col1, idToRender - 1);
-                    break;
-                case 2:
-                    if (Constants.vert2 != null)
-                        Render(Constants.vert2, Constants.col2, idToRender - 1);
-                    break;
-                case 3:
-                    if (Constants.vert3 != null)
-                        Render(Constants.vert3, Constants.col3, idToRender - 1);
-                    break;
-                case 4:
-                    if (Constants.vert4 != null)
-                        Render(Constants.vert4, Constants.col4, idToRender - 1);
-                    break;
-            }
-        } else
-        {
-            Debug.Log("RenderQueue Empty!");
+            case 1:
+                if (Constants.vert1 != null)
+                    Render(Constants.vert1, Constants.col1, iterCount);
+                break;
+            case 2:
+                if (Constants.vert2 != null)
+                    Render(Constants.vert2, Constants.col2, iterCount);
+                break;
+            case 3:
+                if (Constants.vert3 != null)
+                    Render(Constants.vert3, Constants.col3, iterCount);
+                break;
+            case 4:
+                if (Constants.vert4 != null)
+                    Render(Constants.vert4, Constants.col4, iterCount);
+                break;
         }
+        iterCount += 1;
+        if (iterCount >= 4)
+            iterCount = 0;
+        //int idToRender;
+        //if (q.TryDequeue(out idToRender))
+        //{
+        //    Debug.Log(string.Format("RenderQueue DQ: {0}; Q size: {1}", idToRender, q.Count));
+        //    switch (idToRender)
+        //    {
+        //        case 1:
+        //            if (Constants.vert1 != null)
+        //                Render(Constants.vert1, Constants.col1, idToRender - 1);
+        //            break;
+        //        case 2:
+        //            if (Constants.vert2 != null)
+        //                Render(Constants.vert2, Constants.col2, idToRender - 1);
+        //            break;
+        //        case 3:
+        //            if (Constants.vert3 != null)
+        //                Render(Constants.vert3, Constants.col3, idToRender - 1);
+        //            break;
+        //        case 4:
+        //            if (Constants.vert4 != null)
+        //                Render(Constants.vert4, Constants.col4, idToRender - 1);
+        //            break;
+        //    }
+        //} else
+        //{
+        //    Debug.Log("RenderQueue Empty!");
+        //}
     }
 
     void UpdatePointSize()
