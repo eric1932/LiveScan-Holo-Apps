@@ -229,13 +229,39 @@ public class PointCloudReceiver : MonoBehaviour
             }
             catch (Exception e)
             {
+                // Logging
                 Debug.Log(String.Format("socket or else error; show error text; destroy self; port {0}; multiID {1}", port, multiID));
                 Debug.Log(String.Format("Exception={0}", e));
+                
                 // custom error handler
                 //ConnectionHandlerPrefab.GetComponent<MyConnectionHandler>().setPrefabActive(false);
+                
+                // in case of multi-targets
+                // push empty array to flush display
+                switch (multiID)
+                {
+                    case 1:
+                        Constants.vert1 = new[] { 0f, 0f, 0f };
+                        Constants.col1 = new[] { (byte) 0, (byte) 0, (byte) 0 };
+                        break;
+                    case 2:
+                        Constants.vert2 = new[] { 0f, 0f, 0f };
+                        Constants.col2 = new[] { (byte)0, (byte)0, (byte)0 };
+                        break;
+                    case 3:
+                        Constants.vert3 = new[] { 0f, 0f, 0f };
+                        Constants.col3 = new[] { (byte)0, (byte)0, (byte)0 };
+                        break;
+                    case 4:
+                        Constants.vert4 = new[] { 0f, 0f, 0f };
+                        Constants.col4 = new[] { (byte)0, (byte)0, (byte)0 };
+                        break;
+                }
+
                 // destroy pointcloudrenderer
                 pendingDestroy = true;
-                return;  // kill self (thread)
+                break;  // kill self (thread)
+                return;
             }
         }
     }
