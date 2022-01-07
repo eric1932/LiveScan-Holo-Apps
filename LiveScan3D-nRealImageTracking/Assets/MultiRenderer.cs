@@ -36,7 +36,7 @@ public class MultiRenderer : MonoBehaviour
         //float fps = 1f / Time.smoothDeltaTime;
         //if (fps < 60)
         //    return;
-        if (Time.smoothDeltaTime >= 0.01)  // 0.016
+        if (Time.smoothDeltaTime >= 0.02)  // 0.016 for 62.5 fps; 0.02 for 50
             return;
 
         switch (iterCount)
