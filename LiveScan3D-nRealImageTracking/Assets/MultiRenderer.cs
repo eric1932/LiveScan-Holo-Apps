@@ -39,6 +39,7 @@ public class MultiRenderer : MonoBehaviour
         if (Time.smoothDeltaTime >= 0.02)  // 0.016 for 62.5 fps; 0.02 for 50
             return;
 
+        System.Threading.Thread.MemoryBarrier();
         switch (iterCount)
         {
             case 1:
@@ -58,6 +59,7 @@ public class MultiRenderer : MonoBehaviour
                     Render(Constants.vert4, Constants.col4, iterCount);
                 break;
         }
+        System.Threading.Thread.MemoryBarrier();
         iterCount += 1;
         if (iterCount >= 4)
             iterCount = 0;

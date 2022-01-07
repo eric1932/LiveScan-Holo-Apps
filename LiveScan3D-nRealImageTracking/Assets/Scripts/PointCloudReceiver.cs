@@ -198,9 +198,9 @@ public class PointCloudReceiver : MonoBehaviour
                     //Debug.Log("Frame received");
                     pendingRender = true;
 
-                    // TODO
                     if (multiID != -1)
                         vertices = TransPoseVector(vertices);
+                    System.Threading.Thread.MemoryBarrier();
                     switch (multiID)
                     {
                         case 1:
@@ -224,16 +224,18 @@ public class PointCloudReceiver : MonoBehaviour
                             //MultiRenderer.q.Enqueue(multiID);
                             break;
                     }
-                    // TODO end
+                    System.Threading.Thread.MemoryBarrier();
                 }
             }
-            catch
+            catch (Exception e)
             {
-                Debug.Log(String.Format("socket or else error; show error text; destroy self; port {0}", port));
+                Debug.Log(String.Format("socket or else error; show error text; destroy self; port {0}; multiID {1}", port, multiID));
+                Debug.Log(String.Format("Exception={0}", e));
                 // custom error handler
                 //ConnectionHandlerPrefab.GetComponent<MyConnectionHandler>().setPrefabActive(false);
                 // destroy pointcloudrenderer
                 pendingDestroy = true;
+                return;  // kill self (thread)
             }
         }
     }
