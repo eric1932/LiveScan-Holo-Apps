@@ -1,5 +1,7 @@
 # eric1932 specific files
 .DS_Store
+.vsconfig
+log.txt
 
 # This .gitignore file should be placed at the root of your Unity project directory
 #
