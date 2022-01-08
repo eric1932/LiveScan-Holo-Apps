@@ -7,10 +7,12 @@ using System.Threading;
 
 public class MyConnectionHandler : MonoBehaviour
 {
-    private float nextActionTime = 0.0f;
+    private float nextActionTime = 0f;
+    private float nextSmallActionTime = 0f;
 
     public GameObject pointCloudRenderer;
     private float checkPeriod = 2f;
+    private float smallCheckPeriod = 0.5f;
     private GameObject instance = null;
     [HideInInspector]
     public static bool instanceNull { get; private set; }
@@ -61,7 +63,12 @@ public class MyConnectionHandler : MonoBehaviour
         //    if (TextSystemConnecting != null)
         //        TextSystemConnecting.SetActive(true);
         //}
-        instanceNull = instance == null;
+        
+        if (Time.time > nextSmallActionTime)
+        {
+            nextSmallActionTime += smallCheckPeriod;
+            instanceNull = instance == null;
+        }
     }
 
     public void setPrefabActive(bool active)
