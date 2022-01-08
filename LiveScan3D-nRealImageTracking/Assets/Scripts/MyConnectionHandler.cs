@@ -15,7 +15,7 @@ public class MyConnectionHandler : MonoBehaviour
     [HideInInspector]
     public static bool instanceNull { get; private set; }
 
-    public int port = Constants.port;
+    public int port = Constants.DefaultPort;
 
     //private TimeSpan timeout = TimeSpan.FromMilliseconds(100);
 

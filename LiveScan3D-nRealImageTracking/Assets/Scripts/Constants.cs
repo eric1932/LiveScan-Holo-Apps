@@ -13,7 +13,7 @@ public class Constants : MonoBehaviour
     //public static string serverHostName = "192.168.10.14";
 #endif
 
-    public static int port = 48002;
+    public static int DefaultPort = 48002;
 
     public static float[] vert1 = { };
     public static float[] vert2 = { };
