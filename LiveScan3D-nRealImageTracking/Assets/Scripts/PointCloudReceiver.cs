@@ -261,7 +261,7 @@ public class PointCloudReceiver : MonoBehaviour
                 // destroy pointcloudrenderer
                 pendingDestroy = true;
                 break;  // kill self (thread)
-                return;
+                //return;
             }
         }
     }
