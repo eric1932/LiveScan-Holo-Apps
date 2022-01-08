@@ -42,19 +42,19 @@ public class MultiRenderer : MonoBehaviour
         System.Threading.Thread.MemoryBarrier();
         switch (iterCount)
         {
-            case 1:
+            case 0:
                 if (Constants.vert1 != null)
                     Render(Constants.vert1, Constants.col1, iterCount);
                 break;
-            case 2:
+            case 1:
                 if (Constants.vert2 != null)
                     Render(Constants.vert2, Constants.col2, iterCount);
                 break;
-            case 3:
+            case 2:
                 if (Constants.vert3 != null)
                     Render(Constants.vert3, Constants.col3, iterCount);
                 break;
-            case 4:
+            case 3:
                 if (Constants.vert4 != null)
                     Render(Constants.vert4, Constants.col4, iterCount);
                 break;
