@@ -59,6 +59,15 @@ public class PointCloudReceiver : MonoBehaviour
 
         if (NRInput.IsTouching()) return;  // If touching trackpad, do not render
 
+        // ThreadReceiver keepalive (unused yet)
+        //if (receiverThread == null || !receiverThread.IsAlive)
+        //{
+        //    if (receiverThread != null)
+        //        receiverThread.Abort();
+        //    receiverThread = new Thread(ThreadReceiver);
+        //    receiverThread.Start();
+        //}
+
         // a lot of code removed here
         // receive in thread
 
@@ -78,10 +87,16 @@ public class PointCloudReceiver : MonoBehaviour
 
     public void Connect(string IP)
     {
+        try
+        {
 #if WINDOWS_UWP
-        socket = new NetworkCommunication.TransferSocket(IP, port);
+            socket = new NetworkCommunication.TransferSocket(IP, port);
 #else
-        socket = new TcpClient(IP, port);
+            socket = new TcpClient(IP, port);  // Eric1932: socket can also encounter errors; 
+        } catch
+        {
+            Destroy(gameObject);
+        }
 
         // eric code
         // shorten socket timeout
