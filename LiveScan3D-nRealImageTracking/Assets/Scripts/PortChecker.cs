@@ -9,6 +9,7 @@ public class PortChecker : MonoBehaviour
     public int[] PortChecklist = { 48002, 48004, 48006, 48008 };
     public bool[] PortStatus { get; private set; } = null;
     private Thread[] CheckerThreadList = null;
+    private Dictionary<int, int> map = new Dictionary<int, int>();  // map port # to idx
 
     // Start is called before the first frame update
     void Start()
@@ -17,6 +18,7 @@ public class PortChecker : MonoBehaviour
         CheckerThreadList = new Thread[PortChecklist.Length];
         for (int i = 0; i < PortChecklist.Length; ++i)
         {
+            map[PortChecklist[i]] = i;
             int closureJ = i;
             Thread t = new Thread(() => ThreadWrapper(closureJ, Constants.serverHostName, PortChecklist[closureJ]));
             CheckerThreadList[i] = t;
@@ -29,6 +31,22 @@ public class PortChecker : MonoBehaviour
     {
         //Debug.Log(string.Format("test check: {0}", CheckPort(Constants.serverHostName, Constants.port)));
         //Debug.Log(string.Join(" ", PortStatus));
+    }
+
+    public bool GetStatusByPort(int port)
+    {
+        if (map.ContainsKey(port))
+            return GetStatusByIdx(map[port]);
+        else
+            return false;
+    }
+
+    public bool GetStatusByIdx(int index)
+    {
+        if (PortStatus != null)
+            return PortStatus[index];
+        else
+            return false;
     }
 
     void ThreadWrapper(int idx, string host, int port)
