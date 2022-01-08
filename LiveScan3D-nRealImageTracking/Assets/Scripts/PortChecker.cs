@@ -6,10 +6,10 @@ using System.Threading;
 
 public class PortChecker : MonoBehaviour
 {
-    public int[] PortChecklist = { 48002, 48004, 48006, 48008 };
-    public bool[] PortStatus { get; private set; } = null;
-    private Thread[] CheckerThreadList = null;
-    private Dictionary<int, int> map = new Dictionary<int, int>();  // map port # to idx
+    public static int[] PortChecklist = { 48002, 48004, 48006, 48008 };
+    public static bool[] PortStatus { get; private set; } = null;
+    private static Thread[] CheckerThreadList = null;
+    private static Dictionary<int, int> map = new Dictionary<int, int>();  // map port # to idx
 
     // Start is called before the first frame update
     void Start()
@@ -33,7 +33,7 @@ public class PortChecker : MonoBehaviour
         //Debug.Log(string.Join(" ", PortStatus));
     }
 
-    public bool GetStatusByPort(int port)
+    public static bool GetStatusByPort(int port)
     {
         if (map.ContainsKey(port))
             return GetStatusByIdx(map[port]);
@@ -41,7 +41,7 @@ public class PortChecker : MonoBehaviour
             return false;
     }
 
-    public bool GetStatusByIdx(int index)
+    public static bool GetStatusByIdx(int index)
     {
         if (PortStatus != null)
             return PortStatus[index];
