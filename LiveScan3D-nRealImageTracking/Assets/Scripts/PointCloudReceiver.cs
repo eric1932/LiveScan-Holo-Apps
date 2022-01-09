@@ -93,17 +93,18 @@ public class PointCloudReceiver : MonoBehaviour
             socket = new NetworkCommunication.TransferSocket(IP, port);
 #else
             socket = new TcpClient(IP, port);  // Eric1932: socket can also encounter errors; 
-        } catch
+
+            // eric code
+            // shorten socket timeout
+            socket.ReceiveTimeout = 500;
+#endif
+            bConnected = true;
+            //Debug.Log("Connected");
+        }
+        catch
         {
             Destroy(gameObject);
         }
-
-        // eric code
-        // shorten socket timeout
-        socket.ReceiveTimeout = 500;
-#endif
-        bConnected = true;
-        //Debug.Log("Connected");
     }
 
     //Frame receiving for the editor
