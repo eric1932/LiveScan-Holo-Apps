@@ -97,7 +97,7 @@ public class MyConnectionHandler : MonoBehaviour
         }
     }
 
-    public static bool AnyInstanceOnline()
+    public static bool AllInstancesOffline()
     {
         if (targetNotNull == null)
             return false;
@@ -105,8 +105,8 @@ public class MyConnectionHandler : MonoBehaviour
         {
             foreach (bool x in targetNotNull)
                 if (x)
-                    return true;
-            return false;
+                    return false;
+            return true;
         }
     }
 

@@ -19,7 +19,7 @@ public class TextSystemConnectingController : MonoBehaviour
         if (Time.time > nextActionTime)
         {
             nextActionTime += checkPeriod;
-            gameObject.transform.GetChild(0).gameObject.SetActive(!MyConnectionHandler.AnyInstanceOnline());
+            gameObject.transform.GetChild(0).gameObject.SetActive(MyConnectionHandler.AllInstancesOffline());
         }
     }
 }
