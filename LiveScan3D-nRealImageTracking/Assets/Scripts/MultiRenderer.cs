@@ -36,7 +36,7 @@ public class MultiRenderer : MonoBehaviour
         //float fps = 1f / Time.smoothDeltaTime;
         //if (fps < 60)
         //    return;
-        if (Time.smoothDeltaTime >= 0.02)  // 0.016 for 62.5 fps; 0.02 for 50
+        if (Time.smoothDeltaTime >= 0.025)  // 0.016 for 62.5 fps; 0.02 for 50; 0.25 for 40
             return;
 
         System.Threading.Thread.MemoryBarrier();
