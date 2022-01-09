@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class TextSystemConnectingController : MonoBehaviour
 {
+    private float nextActionTime = 0f;
+    private float checkPeriod = 1f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -13,6 +16,10 @@ public class TextSystemConnectingController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        gameObject.transform.GetChild(0).gameObject.SetActive(MyConnectionHandler.instanceNull);
+        if (Time.time > nextActionTime)
+        {
+            nextActionTime += checkPeriod;
+            gameObject.transform.GetChild(0).gameObject.SetActive(!MyConnectionHandler.AnyInstanceOnline());
+        }
     }
 }

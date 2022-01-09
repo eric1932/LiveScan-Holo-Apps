@@ -7,6 +7,10 @@ using System.Threading;
 
 public class MyConnectionHandler : MonoBehaviour
 {
+    private static int InstanceCount = 0;
+    private static bool[] targetNotNull = null;
+    private int instanceID;
+
     private float nextActionTime = 0f;
     private float nextSmallActionTime = 0f;
 
@@ -14,8 +18,6 @@ public class MyConnectionHandler : MonoBehaviour
     private float checkPeriod = 2f;
     private float smallCheckPeriod = 0.5f;
     private GameObject instance = null;
-    [HideInInspector]
-    public static bool instanceNull { get; private set; }
 
     public int port = Constants.DefaultPort;
 
@@ -27,6 +29,16 @@ public class MyConnectionHandler : MonoBehaviour
     void Start()
     {
         //TextSystemConnecting = GameObject.Find("/MyTextButtonSystemConnecting");
+
+        if (gameObject.transform.parent.transform.parent == null)
+        {
+            // temp fix: MyVisualizer will initialize this class before it shows up in the main view;
+            // to exclude this situation, just ensure that this object is under the main scene.
+            instanceID = InstanceCount++;
+
+            if (targetNotNull == null || targetNotNull.Length != InstanceCount)  // update the size
+                targetNotNull = new bool[InstanceCount];
+        }
     }
 
     // Update is called once per frame
@@ -67,7 +79,7 @@ public class MyConnectionHandler : MonoBehaviour
         if (Time.time > nextSmallActionTime)
         {
             nextSmallActionTime += smallCheckPeriod;
-            instanceNull = instance == null;
+            targetNotNull[instanceID] = instance != null;
         }
     }
 
@@ -82,6 +94,19 @@ public class MyConnectionHandler : MonoBehaviour
                 instance = null;
             }
             Debug.Log("destroy instance");
+        }
+    }
+
+    public static bool AnyInstanceOnline()
+    {
+        if (targetNotNull == null)
+            return false;
+        else
+        {
+            foreach (bool x in targetNotNull)
+                if (x)
+                    return true;
+            return false;
         }
     }
 
