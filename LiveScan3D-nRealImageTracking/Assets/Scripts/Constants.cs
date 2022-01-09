@@ -4,14 +4,17 @@ using UnityEngine;
 
 public class Constants : MonoBehaviour
 {
+    public static readonly string localhost = "127.0.0.1";
+    public static readonly string VultrSG = "139.180.141.82";
+    public static readonly string LAN = "192.168.10.14";
+
+    public static string serverHostName =
 #if UNITY_EDITOR
-    public static string serverHostName = "127.0.0.1";
+        localhost
 #else
-    // Vultr
-    public static string serverHostName = "139.180.141.82";
-    // LAN
-    //public static string serverHostName = "192.168.10.14";
+        VultrSG
 #endif
+        ;
 
     public static int DefaultPort = 48002;
 
