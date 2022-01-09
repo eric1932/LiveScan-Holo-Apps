@@ -103,6 +103,26 @@ public class PointCloudReceiver : MonoBehaviour
         }
         catch
         {
+            // duplicated code
+            switch (multiID)
+            {
+                case 1:
+                    Constants.vert1 = new[] { 0f, 0f, 0f };
+                    Constants.col1 = new[] { (byte)0, (byte)0, (byte)0 };
+                    break;
+                case 2:
+                    Constants.vert2 = new[] { 0f, 0f, 0f };
+                    Constants.col2 = new[] { (byte)0, (byte)0, (byte)0 };
+                    break;
+                case 3:
+                    Constants.vert3 = new[] { 0f, 0f, 0f };
+                    Constants.col3 = new[] { (byte)0, (byte)0, (byte)0 };
+                    break;
+                case 4:
+                    Constants.vert4 = new[] { 0f, 0f, 0f };
+                    Constants.col4 = new[] { (byte)0, (byte)0, (byte)0 };
+                    break;
+            }
             Destroy(gameObject);
         }
     }
