@@ -6,7 +6,7 @@ using System.Threading;
 
 public class PortChecker : MonoBehaviour
 {
-    public static int[] PortChecklist = { 48002, 48004, 48006, 48008 };
+    public static int[] PortChecklist = { 48002, 48004, 48006 };
     public static bool[] PortStatus { get; private set; } = null;
     private static Thread[] CheckerThreadList = null;
     private static Dictionary<int, int> map = new Dictionary<int, int>();  // map port # to idx
