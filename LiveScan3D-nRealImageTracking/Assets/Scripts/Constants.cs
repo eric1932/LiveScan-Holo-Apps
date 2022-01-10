@@ -20,13 +20,6 @@ public class Constants : MonoBehaviour
 
     public static int DefaultPort = 48002;
 
-    public static float[] vert1 = { };
-    public static float[] vert2 = { };
-    public static float[] vert3 = { };
-    public static float[] vert4 = { };
-
-    public static byte[] col1 = { };
-    public static byte[] col2 = { };
-    public static byte[] col3 = { };
-    public static byte[] col4 = { };
+    public static readonly List<float[]> Vertices = new List<float[]>();
+    public static readonly List<byte[]> Colors = new List<byte[]>();
 }

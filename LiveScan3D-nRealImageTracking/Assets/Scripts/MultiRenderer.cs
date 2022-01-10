@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Collections.Concurrent;
 
 public class MultiRenderer : MonoBehaviour
 {
@@ -14,14 +13,13 @@ public class MultiRenderer : MonoBehaviour
     readonly List<List<GameObject>> elemsList = new List<List<GameObject>>();
 
     int iterCount = 0;
-
-    //public static ConcurrentQueue<int> q = new ConcurrentQueue<int>();
+    public static readonly int NumClients = 3;
 
     void Start()
     {
-        //elems = new List<GameObject>();
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < NumClients; i++)
             elemsList.Add(new List<GameObject>());
+
         UpdatePointSize();
     }
 
@@ -33,63 +31,16 @@ public class MultiRenderer : MonoBehaviour
             transform.hasChanged = false;
         }
 
-        //float fps = 1f / Time.smoothDeltaTime;
-        //if (fps < 60)
-        //    return;
         if (Time.smoothDeltaTime >= 0.04)  // 0.016 for 62.5 fps; 0.02 for 50; 0.25 for 40
             return;
 
-        System.Threading.Thread.MemoryBarrier();
-        switch (iterCount)
-        {
-            case 0:
-                if (Constants.vert1 != null)
-                    Render(Constants.vert1, Constants.col1, iterCount);
-                break;
-            case 1:
-                if (Constants.vert2 != null)
-                    Render(Constants.vert2, Constants.col2, iterCount);
-                break;
-            case 2:
-                if (Constants.vert3 != null)
-                    Render(Constants.vert3, Constants.col3, iterCount);
-                break;
-            case 3:
-                if (Constants.vert4 != null)
-                    Render(Constants.vert4, Constants.col4, iterCount);
-                break;
-        }
-        System.Threading.Thread.MemoryBarrier();
+        // render ONLY ONE pointcloud
+        if (Constants.Vertices.Count > iterCount)
+            Render(Constants.Vertices[iterCount], Constants.Colors[iterCount], iterCount);
+
         iterCount += 1;
-        if (iterCount >= 4)
+        if (iterCount >= NumClients)  // range within 0 1 2
             iterCount = 0;
-        //int idToRender;
-        //if (q.TryDequeue(out idToRender))
-        //{
-        //    Debug.Log(string.Format("RenderQueue DQ: {0}; Q size: {1}", idToRender, q.Count));
-        //    switch (idToRender)
-        //    {
-        //        case 1:
-        //            if (Constants.vert1 != null)
-        //                Render(Constants.vert1, Constants.col1, idToRender - 1);
-        //            break;
-        //        case 2:
-        //            if (Constants.vert2 != null)
-        //                Render(Constants.vert2, Constants.col2, idToRender - 1);
-        //            break;
-        //        case 3:
-        //            if (Constants.vert3 != null)
-        //                Render(Constants.vert3, Constants.col3, idToRender - 1);
-        //            break;
-        //        case 4:
-        //            if (Constants.vert4 != null)
-        //                Render(Constants.vert4, Constants.col4, idToRender - 1);
-        //            break;
-        //    }
-        //} else
-        //{
-        //    Debug.Log("RenderQueue Empty!");
-        //}
     }
 
     void UpdatePointSize()
@@ -116,8 +67,6 @@ public class MultiRenderer : MonoBehaviour
             AddElems(nChunks - elemsList[elemsIdx].Count, elemsIdx);
         if (elemsList[elemsIdx].Count > nChunks)
             RemoveElems(elemsList[elemsIdx].Count - nChunks, elemsIdx);
-        //Debug.Assert(elems.Count == nChunks);
-        //Debug.Log(nChunks);
 
         int offset = 0;
         for (int i = 0; i < nChunks; i++)

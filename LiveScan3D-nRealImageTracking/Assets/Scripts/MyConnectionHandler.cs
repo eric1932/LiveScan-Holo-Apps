@@ -8,7 +8,7 @@ using System.Threading;
 public class MyConnectionHandler : MonoBehaviour
 {
     private static int InstanceCount = 0;
-    private static bool[] targetNotNull = null;
+    private static List<bool> targetNotNull = new List<bool>();
     private int instanceID;
 
     private float nextActionTime = 0f;
@@ -36,8 +36,10 @@ public class MyConnectionHandler : MonoBehaviour
             // to exclude this situation, just ensure that this object is under the main scene.
             instanceID = InstanceCount++;
 
-            if (targetNotNull == null || targetNotNull.Length != InstanceCount)  // update the size
-                targetNotNull = new bool[InstanceCount];
+            // update the size
+            targetNotNull.Add(false);
+            Constants.Vertices.Add(null);
+            Constants.Colors.Add(null);
         }
     }
 

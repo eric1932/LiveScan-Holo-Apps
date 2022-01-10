@@ -12,7 +12,6 @@ using System.Threading;
 
 using NRKernal;
 
-
 public class PointCloudReceiver : MonoBehaviour
 {
 #if WINDOWS_UWP
@@ -81,6 +80,15 @@ public class PointCloudReceiver : MonoBehaviour
 
         if (pendingDestroy)
         {
+            // duplicated code
+            //Constants.Vertices[multiID] = new[] { 0f, 0f, 0f };
+            //Constants.Colors[multiID] = new[] { (byte)0, (byte)0, (byte)0 };
+            Constants.Vertices[multiID] = null;
+            Constants.Colors[multiID] = null;
+
+            if (socket != null)
+                socket.Close();
+
             Destroy(gameObject);
         }
     }
@@ -92,37 +100,47 @@ public class PointCloudReceiver : MonoBehaviour
 #if WINDOWS_UWP
             socket = new NetworkCommunication.TransferSocket(IP, port);
 #else
-            socket = new TcpClient(IP, port);  // Eric1932: socket can also encounter errors; 
+            // https://stackoverflow.com/a/17118710/8448191
+            TcpClient tmpClient = new TcpClient();
+            var result = tmpClient.BeginConnect(IP, port, null, null);
+            var success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(1.6f));
+            if (!success)
+            {
+                throw new Exception("Failed to connect. (from StackOverflow)");
+            }
+            tmpClient.EndConnect(result);
+
+            //socket = new TcpClient(IP, port);  // Eric1932: socket can also encounter errors; 
+            socket = tmpClient;
 
             // eric code
             // shorten socket timeout
             socket.ReceiveTimeout = 500;
+
+            // TODO
+            socket.SendTimeout = 500;
+            //socket.NoDelay = true;
 #endif
             bConnected = true;
             //Debug.Log("Connected");
         }
-        catch
+        catch (Exception e)
         {
+            Debug.LogWarning(String.Format("TCP handshake error: {0}", e));
+
             // duplicated code
-            switch (multiID)
-            {
-                case 1:
-                    Constants.vert1 = new[] { 0f, 0f, 0f };
-                    Constants.col1 = new[] { (byte)0, (byte)0, (byte)0 };
-                    break;
-                case 2:
-                    Constants.vert2 = new[] { 0f, 0f, 0f };
-                    Constants.col2 = new[] { (byte)0, (byte)0, (byte)0 };
-                    break;
-                case 3:
-                    Constants.vert3 = new[] { 0f, 0f, 0f };
-                    Constants.col3 = new[] { (byte)0, (byte)0, (byte)0 };
-                    break;
-                case 4:
-                    Constants.vert4 = new[] { 0f, 0f, 0f };
-                    Constants.col4 = new[] { (byte)0, (byte)0, (byte)0 };
-                    break;
-            }
+            //Constants.Vertices[multiID] = new[] { 0f, 0f, 0f };
+            //Constants.Colors[multiID] = new[] { (byte)0, (byte)0, (byte)0 };
+            Constants.Vertices[multiID] = null;
+            Constants.Colors[multiID] = null;
+
+            if (socket != null)
+                socket.Close();
+
+            // stop thread
+            if (receiverThread != null)
+                receiverThread.Abort();
+
             Destroy(gameObject);
         }
     }
@@ -236,63 +254,26 @@ public class PointCloudReceiver : MonoBehaviour
 
                     if (multiID != -1)
                         vertices = TransPoseVector(vertices);
-                    System.Threading.Thread.MemoryBarrier();
-                    switch (multiID)
-                    {
-                        case 1:
-                            Constants.vert1 = vertices;
-                            Constants.col1 = colors;
-                            //MultiRenderer.q.Enqueue(multiID);
-                            break;
-                        case 2:
-                            Constants.vert2 = vertices;
-                            Constants.col2 = colors;
-                            //MultiRenderer.q.Enqueue(multiID);
-                            break;
-                        case 3:
-                            Constants.vert3 = vertices;
-                            Constants.col3 = colors;
-                            //MultiRenderer.q.Enqueue(multiID);
-                            break;
-                        case 4:
-                            Constants.vert4 = vertices;
-                            Constants.col4 = colors;
-                            //MultiRenderer.q.Enqueue(multiID);
-                            break;
-                    }
-                    System.Threading.Thread.MemoryBarrier();
+
+                    Constants.Vertices[multiID] = vertices;
+                    Constants.Colors[multiID] = colors;
                 }
             }
             catch (Exception e)
             {
-                // Logging
-                Debug.Log(String.Format("socket or else error; show error text; destroy self; port {0}; multiID {1}", port, multiID));
-                Debug.Log(String.Format("Exception={0}", e));
-                
+                Debug.LogWarning(String.Format("socket receiving frame error: {0}! destroy self; port {1}; multiID {2}",
+                    e, port, multiID));
+                Debug.LogError(String.Format(new System.Diagnostics.StackTrace().ToString()));
+
                 // custom error handler
                 //ConnectionHandlerPrefab.GetComponent<MyConnectionHandler>().setPrefabActive(false);
-                
+
                 // in case of multi-targets
                 // push empty array to flush display
-                switch (multiID)
-                {
-                    case 1:
-                        Constants.vert1 = new[] { 0f, 0f, 0f };
-                        Constants.col1 = new[] { (byte) 0, (byte) 0, (byte) 0 };
-                        break;
-                    case 2:
-                        Constants.vert2 = new[] { 0f, 0f, 0f };
-                        Constants.col2 = new[] { (byte)0, (byte)0, (byte)0 };
-                        break;
-                    case 3:
-                        Constants.vert3 = new[] { 0f, 0f, 0f };
-                        Constants.col3 = new[] { (byte)0, (byte)0, (byte)0 };
-                        break;
-                    case 4:
-                        Constants.vert4 = new[] { 0f, 0f, 0f };
-                        Constants.col4 = new[] { (byte)0, (byte)0, (byte)0 };
-                        break;
-                }
+                //Constants.Vertices[multiID] = new[] { 0f, 0f, 0f };
+                //Constants.Colors[multiID] = new[] { (byte)0, (byte)0, (byte)0 };
+                Constants.Vertices[multiID] = null;
+                Constants.Colors[multiID] = null;
 
                 // destroy pointcloudrenderer
                 pendingDestroy = true;
