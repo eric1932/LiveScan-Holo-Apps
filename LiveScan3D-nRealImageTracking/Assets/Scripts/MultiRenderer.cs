@@ -15,6 +15,9 @@ public class MultiRenderer : MonoBehaviour
     int iterCount = 0;
     public static readonly int NumClients = 3;
 
+    public static readonly bool[] flip = new bool[NumClients];
+    private static readonly bool[] flop = new bool[NumClients];
+
     void Start()
     {
         for (int i = 0; i < NumClients; i++)
@@ -34,9 +37,17 @@ public class MultiRenderer : MonoBehaviour
         if (Time.smoothDeltaTime >= 0.04)  // 0.016 for 62.5 fps; 0.02 for 50; 0.25 for 40
             return;
 
-        // render ONLY ONE pointcloud
-        if (Constants.Vertices.Count > iterCount)
+        // render ONLY ONE pointcloud each time
+        if (Constants.Vertices.Count > iterCount && flip[iterCount] != flop[iterCount])
+        {
+            //Debug.Log("render");
             Render(Constants.Vertices[iterCount], Constants.Colors[iterCount], iterCount);
+            flop[iterCount] = !flop[iterCount];
+        }
+        //else if (flip[iterCount] == flop[iterCount])
+        //{
+        //    Debug.Log("save");
+        //}
 
         iterCount += 1;
         if (iterCount >= NumClients)  // range within 0 1 2

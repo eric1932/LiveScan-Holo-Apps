@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections;
@@ -288,6 +288,8 @@ public class PointCloudReceiver : MonoBehaviour
                         vertices = TransPoseVector(vertices);
                         Constants.Vertices[multiID] = vertices;
                         Constants.Colors[multiID] = colors;
+
+                        MultiRenderer.flip[multiID] = !MultiRenderer.flip[multiID];
                     }
                 }
             }
