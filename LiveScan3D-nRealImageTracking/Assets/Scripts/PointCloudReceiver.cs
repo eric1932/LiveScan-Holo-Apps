@@ -180,7 +180,7 @@ public class PointCloudReceiver : MonoBehaviour
         byte[] buffer0 = new byte[4];
         {
             result = socket.GetStream().ReadAsync(buffer0, 0, 4);
-            success = result.AsyncWaitHandle.WaitOne(4000);
+            success = result.AsyncWaitHandle.WaitOne(3000);
             if (!success)
                 throw new Exception("pointcloud transmission error: get data length");
         }
@@ -200,7 +200,7 @@ public class PointCloudReceiver : MonoBehaviour
             //nBytesRead += socket.GetStream().Read(buffer, nBytesRead, Math.Min(nBytesToRead - nBytesRead, 64000));
 
             result = socket.GetStream().ReadAsync(buffer, nBytesRead, Math.Min(nBytesToRead - nBytesRead, 64000));
-            success = result.AsyncWaitHandle.WaitOne(4000);
+            success = result.AsyncWaitHandle.WaitOne(3000);
             if (!success)
                 throw new Exception("pointcloud transmission error: receive verts");
             else
@@ -221,7 +221,7 @@ public class PointCloudReceiver : MonoBehaviour
             //nBytesRead += socket.GetStream().Read(buffer, nBytesRead, Math.Min(nBytesToRead - nBytesRead, 64000));
 
             result = socket.GetStream().ReadAsync(buffer, nBytesRead, Math.Min(nBytesToRead - nBytesRead, 64000));
-            success = result.AsyncWaitHandle.WaitOne(4000);
+            success = result.AsyncWaitHandle.WaitOne(3000);
             if (!success)
                 throw new Exception("pointcloud transmission error: receive colors");
             else
