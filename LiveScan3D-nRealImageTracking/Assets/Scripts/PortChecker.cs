@@ -43,7 +43,7 @@ public class PortChecker : MonoBehaviour
 
     public static bool GetStatusByIdx(int index)
     {
-        if (PortStatus != null)
+        if (PortStatus != null && 0 <= index && index < PortStatus.Length)
             return PortStatus[index];
         else
             return false;

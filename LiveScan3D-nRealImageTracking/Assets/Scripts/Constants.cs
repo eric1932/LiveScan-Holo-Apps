@@ -15,11 +15,13 @@ public class Constants : MonoBehaviour
         LANEsxi
 #else
         VultrSG
+        //LANEsxi
 #endif
         ;
 
     public static int DefaultPort = 48002;
 
+    public static int ArrayCount = 0;
     public static readonly List<float[]> Vertices = new List<float[]>();
     public static readonly List<byte[]> Colors = new List<byte[]>();
 }

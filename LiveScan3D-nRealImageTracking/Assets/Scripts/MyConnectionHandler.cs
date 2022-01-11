@@ -4,12 +4,13 @@ using UnityEngine;
 using System;
 using System.Net.Sockets;
 using System.Threading;
+using UnityEngine.SceneManagement;
 
 public class MyConnectionHandler : MonoBehaviour
 {
     private static int InstanceCount = 0;
     private static List<bool> targetNotNull = new List<bool>();
-    private int instanceID;
+    private int instanceID = -1;
 
     private float nextActionTime = 0f;
     private float nextSmallActionTime = 0f;
@@ -30,7 +31,8 @@ public class MyConnectionHandler : MonoBehaviour
     {
         //TextSystemConnecting = GameObject.Find("/MyTextButtonSystemConnecting");
 
-        if (gameObject.transform.parent.transform.parent == null)
+        if (gameObject.transform.parent.transform.parent == null  // differ Prefab-as-param & cloned instance
+            || SceneManager.GetActiveScene().name == "scene_not_nReal")  // for test scene
         {
             // temp fix: MyVisualizer will initialize this class before it shows up in the main view;
             // to exclude this situation, just ensure that this object is under the main scene.
@@ -40,6 +42,12 @@ public class MyConnectionHandler : MonoBehaviour
             targetNotNull.Add(false);
             Constants.Vertices.Add(null);
             Constants.Colors.Add(null);
+            ++Constants.ArrayCount;
+
+            Debug.Log("true MCH object instantiated");
+        } else
+        {
+            Debug.Log("fake MCH object instantiated");
         }
     }
 
@@ -81,7 +89,8 @@ public class MyConnectionHandler : MonoBehaviour
         if (Time.time > nextSmallActionTime)
         {
             nextSmallActionTime += smallCheckPeriod;
-            targetNotNull[instanceID] = instance != null;
+            if (instanceID != -1)
+                targetNotNull[instanceID] = instance != null;
         }
     }
 
@@ -102,6 +111,8 @@ public class MyConnectionHandler : MonoBehaviour
     public static bool AllInstancesOffline()
     {
         if (targetNotNull == null)
+            return false;
+        else if (targetNotNull.Count == 0)
             return false;
         else
         {

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections;
@@ -81,10 +81,14 @@ public class PointCloudReceiver : MonoBehaviour
         if (pendingDestroy)
         {
             // duplicated code
+            if (multiID != -1 && multiID < Constants.ArrayCount)
+            {
             //Constants.Vertices[multiID] = new[] { 0f, 0f, 0f };
             //Constants.Colors[multiID] = new[] { (byte)0, (byte)0, (byte)0 };
             Constants.Vertices[multiID] = null;
             Constants.Colors[multiID] = null;
+                Debug.Log(string.Format("Set multID={0} to null", multiID));
+            }
 
             if (socket != null)
                 socket.Close();
@@ -103,10 +107,10 @@ public class PointCloudReceiver : MonoBehaviour
             // https://stackoverflow.com/a/17118710/8448191
             TcpClient tmpClient = new TcpClient();
             var result = tmpClient.BeginConnect(IP, port, null, null);
-            var success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(1.6f));
+            var success = result.AsyncWaitHandle.WaitOne(1800);
             if (!success)
             {
-                throw new Exception("Failed to connect. (from StackOverflow)");
+                throw new Exception("TCP failed to handshake");
             }
             tmpClient.EndConnect(result);
 
@@ -116,23 +120,24 @@ public class PointCloudReceiver : MonoBehaviour
             // eric code
             // shorten socket timeout
             socket.ReceiveTimeout = 500;
-
-            // TODO
             socket.SendTimeout = 500;
             //socket.NoDelay = true;
 #endif
             bConnected = true;
-            //Debug.Log("Connected");
         }
         catch (Exception e)
         {
             Debug.LogWarning(String.Format("TCP handshake error: {0}", e));
 
             // duplicated code
+            if (multiID != -1 && multiID < Constants.ArrayCount)
+            {
             //Constants.Vertices[multiID] = new[] { 0f, 0f, 0f };
             //Constants.Colors[multiID] = new[] { (byte)0, (byte)0, (byte)0 };
             Constants.Vertices[multiID] = null;
             Constants.Colors[multiID] = null;
+                Debug.Log(string.Format("Set multID={0} to null", multiID));
+            }
 
             if (socket != null)
                 socket.Close();
@@ -252,28 +257,34 @@ public class PointCloudReceiver : MonoBehaviour
                     //Debug.Log("Frame received");
                     pendingRender = true;
 
-                    if (multiID != -1)
+                    if (multiID != -1 && multiID < Constants.ArrayCount)
+                    {
                         vertices = TransPoseVector(vertices);
-
                     Constants.Vertices[multiID] = vertices;
                     Constants.Colors[multiID] = colors;
+                    }
                 }
             }
             catch (Exception e)
             {
-                Debug.LogWarning(String.Format("socket receiving frame error: {0}! destroy self; port {1}; multiID {2}",
-                    e, port, multiID));
-                Debug.LogError(String.Format(new System.Diagnostics.StackTrace().ToString()));
+                Debug.LogWarning(String.Format("socket receiving frame error! destroy self; port {0}; multiID {1}",
+                    port, multiID));
+                //Debug.LogError(String.Format(new System.Diagnostics.StackTrace().ToString()));
+                Debug.LogException(e);
 
                 // custom error handler
                 //ConnectionHandlerPrefab.GetComponent<MyConnectionHandler>().setPrefabActive(false);
 
                 // in case of multi-targets
                 // push empty array to flush display
+                if (multiID != -1 && multiID < Constants.ArrayCount)
+                {
                 //Constants.Vertices[multiID] = new[] { 0f, 0f, 0f };
                 //Constants.Colors[multiID] = new[] { (byte)0, (byte)0, (byte)0 };
                 Constants.Vertices[multiID] = null;
                 Constants.Colors[multiID] = null;
+                    Debug.Log(string.Format("Set multID={0} to null", multiID));
+                }
 
                 // destroy pointcloudrenderer
                 pendingDestroy = true;
