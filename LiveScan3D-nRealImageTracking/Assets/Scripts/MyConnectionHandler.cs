@@ -4,33 +4,51 @@ using UnityEngine;
 using System;
 using System.Net.Sockets;
 using System.Threading;
+using UnityEngine.SceneManagement;
 
 public class MyConnectionHandler : MonoBehaviour
 {
-    private float nextActionTime = 0.0f;
+    private static int InstanceCount = 0;
+    private static List<bool> targetNotNull = new List<bool>();
+    private int instanceID = -1;
+
+    private float nextActionTime = 0f;
+    private float nextSmallActionTime = 0f;
 
     public GameObject pointCloudRenderer;
     private float checkPeriod = 2f;
-    private bool portOpen = false;
+    private float smallCheckPeriod = 0.5f;
     private GameObject instance = null;
-    [HideInInspector]
-    public static bool instanceNull { get { return _instanceNull; } }
-    private static bool _instanceNull = false;
 
-    private string host = Constants.serverHostName;  // TODO
-    private int port = Constants.port;  // TODO
-    private TimeSpan timeout = TimeSpan.FromMilliseconds(100);
-    private Thread threadPortChecker = null;
+    public int port = Constants.DefaultPort;
+
+    //private TimeSpan timeout = TimeSpan.FromMilliseconds(100);
 
     //private GameObject TextSystemConnecting;
-
-    private bool FlagShouldRunning = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        threadPortChecker = new Thread(PortChecker);
         //TextSystemConnecting = GameObject.Find("/MyTextButtonSystemConnecting");
+
+        if (gameObject.transform.parent.transform.parent == null  // differ Prefab-as-param & cloned instance
+            || SceneManager.GetActiveScene().name == "scene_not_nReal")  // for test scene
+        {
+            // temp fix: MyVisualizer will initialize this class before it shows up in the main view;
+            // to exclude this situation, just ensure that this object is under the main scene.
+            instanceID = InstanceCount++;
+
+            // update the size
+            targetNotNull.Add(false);
+            Constants.Vertices.Add(null);
+            Constants.Colors.Add(null);
+            ++Constants.ArrayCount;
+
+            Debug.Log("true MCH object instantiated");
+        } else
+        {
+            Debug.Log("fake MCH object instantiated");
+        }
     }
 
     // Update is called once per frame
@@ -43,27 +61,16 @@ public class MyConnectionHandler : MonoBehaviour
             // execute block of code here
             if (instance == null)
             {
-                if (FlagShouldRunning)
-                {
-                    portOpen = false;
-                    FlagShouldRunning = false;
-                }
-
-                if (!threadPortChecker.IsAlive)
-                {
-                    threadPortChecker = new Thread(PortChecker);
-                    threadPortChecker.Start();
-                }
-
-                if (portOpen)
+                if (PortChecker.GetStatusByPort(port))
                 {
                     instance = Instantiate(pointCloudRenderer) as GameObject;
                     instance.transform.parent = gameObject.transform.parent;
                     instance.transform.position += new Vector3(0, 0, 0.6f);  // TODO temp fix: move 0.4m+0.1m+0.1m further
                     instance.SetActive(true);
                     Debug.Log("INST");
-                    portOpen = false;
-                    FlagShouldRunning = true;
+
+                    // recycle previously used meshes
+                    Resources.UnloadUnusedAssets();
                 }
             }
         }
@@ -81,7 +88,13 @@ public class MyConnectionHandler : MonoBehaviour
         //    if (TextSystemConnecting != null)
         //        TextSystemConnecting.SetActive(true);
         //}
-        _instanceNull = instance == null;
+        
+        if (Time.time > nextSmallActionTime)
+        {
+            nextSmallActionTime += smallCheckPeriod;
+            if (instanceID != -1)
+                targetNotNull[instanceID] = instance != null;
+        }
     }
 
     public void setPrefabActive(bool active)
@@ -90,30 +103,47 @@ public class MyConnectionHandler : MonoBehaviour
         if (!active)
         {
             if (instance != null)  // not destroyed yet
+            {
                 Destroy(instance);
+                instance = null;
+            }
             Debug.Log("destroy instance");
-            portOpen = false;
         }
     }
 
-    void PortChecker()
+    public static bool AllInstancesOffline()
     {
-        portOpen = false;
-        try
+        if (targetNotNull == null)
+            return false;
+        else if (targetNotNull.Count == 0)
+            return false;
+        else
         {
-            using (var client = new TcpClient())
-            {
-                var result = client.BeginConnect(host, port, null, null);
-                var success = result.AsyncWaitHandle.WaitOne(timeout);
-                client.EndConnect(result);
-                Debug.Log("port open");
-                portOpen = true;
-            }
-        }
-        catch
-        {
-            Debug.Log("port not open");
-            //return;
+            foreach (bool x in targetNotNull)
+                if (x)
+                    return false;
+            return true;
         }
     }
+
+    //void PortChecker()
+    //{
+    //    portOpen = false;
+    //    try
+    //    {
+    //        using (var client = new TcpClient())
+    //        {
+    //            var result = client.BeginConnect(host, port, null, null);
+    //            var success = result.AsyncWaitHandle.WaitOne(timeout);
+    //            client.EndConnect(result);
+    //            Debug.Log("port open");
+    //            portOpen = true;
+    //        }
+    //    }
+    //    catch
+    //    {
+    //        Debug.Log("port not open");
+    //        //return;
+    //    }
+    //}
 }

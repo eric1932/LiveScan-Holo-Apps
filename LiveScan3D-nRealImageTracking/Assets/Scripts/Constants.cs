@@ -4,12 +4,24 @@ using UnityEngine;
 
 public class Constants : MonoBehaviour
 {
-#if UNITY_EDITOR
-    public static string serverHostName = "127.0.0.1";
-#else
-    //public static string serverHostName = "139.180.141.82";
-    public static string serverHostName = "127.0.0.1";
-#endif
+    public static readonly string localhost = "127.0.0.1";
+    public static readonly string VultrSG = "139.180.141.82";
+    public static readonly string LANTUF = "192.168.10.14";
+    public static readonly string LANEsxi = "192.168.10.10";
 
-    public static int port = 48002;
+    public static string serverHostName =
+#if UNITY_EDITOR
+        //localhost
+        LANEsxi
+#else
+        VultrSG
+        //LANEsxi
+#endif
+        ;
+
+    public static int DefaultPort = 48002;
+
+    public static int ArrayCount = 0;
+    public static readonly List<float[]> Vertices = new List<float[]>();
+    public static readonly List<byte[]> Colors = new List<byte[]>();
 }
