@@ -68,6 +68,9 @@ public class MyConnectionHandler : MonoBehaviour
                     instance.transform.position += new Vector3(0, 0, 0.6f);  // TODO temp fix: move 0.4m+0.1m+0.1m further
                     instance.SetActive(true);
                     Debug.Log("INST");
+
+                    // recycle previously used meshes
+                    Resources.UnloadUnusedAssets();
                 }
             }
         }
