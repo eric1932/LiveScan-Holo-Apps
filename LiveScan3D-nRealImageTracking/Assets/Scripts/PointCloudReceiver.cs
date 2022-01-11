@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections;
@@ -80,6 +80,8 @@ public class PointCloudReceiver : MonoBehaviour
 
         if (pendingDestroy)
         {
+            Debug.Log("initiate destruction");
+
             // duplicated code
             if (multiID != -1 && multiID < Constants.ArrayCount)
             {
@@ -87,6 +89,9 @@ public class PointCloudReceiver : MonoBehaviour
                 //Constants.Colors[multiID] = new[] { (byte)0, (byte)0, (byte)0 };
                 Constants.Vertices[multiID] = null;
                 Constants.Colors[multiID] = null;
+
+                (GameObject.Find("/MultiRenderer").GetComponent<MultiRenderer>()).Render(null, null, multiID);
+
                 Debug.Log(string.Format("Set multID={0} to null", multiID));
             }
 
@@ -136,6 +141,9 @@ public class PointCloudReceiver : MonoBehaviour
                 //Constants.Colors[multiID] = new[] { (byte)0, (byte)0, (byte)0 };
                 Constants.Vertices[multiID] = null;
                 Constants.Colors[multiID] = null;
+
+                (GameObject.Find("/MultiRenderer").GetComponent<MultiRenderer>()).Render(null, null, multiID);
+
                 Debug.Log(string.Format("Set multID={0} to null", multiID));
             }
 
@@ -311,6 +319,9 @@ public class PointCloudReceiver : MonoBehaviour
                     //Constants.Colors[multiID] = new[] { (byte)0, (byte)0, (byte)0 };
                     Constants.Vertices[multiID] = null;
                     Constants.Colors[multiID] = null;
+
+                    //(GameObject.Find("/MultiRenderer").GetComponent<MultiRenderer>()).Render(null, null, multiID);
+
                     Debug.Log(string.Format("Set multID={0} to null", multiID));
                 }
 
