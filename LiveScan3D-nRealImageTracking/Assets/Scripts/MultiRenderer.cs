@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class MultiRenderer : MonoBehaviour
 {
@@ -158,7 +159,8 @@ public class MultiRenderer : MonoBehaviour
     public float[] TransPoseVector(float[] v, int multiID)
     {
         float[] outVector = v;
-        Transform targetTransform = playerTransformList[PositionManager.PositionData[multiID]];
+        // TODO no indexof
+        Transform targetTransform = playerTransformList[Array.IndexOf(PositionManager.PositionData, multiID)];
         for (int i = 0; i < v.Length / 3; i++)
             for (int j = 0; j < 3; j++)
                 outVector[i * 3 + j] += targetTransform.position[j] + targetTransform.localPosition[j];

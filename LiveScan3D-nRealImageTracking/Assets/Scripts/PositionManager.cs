@@ -44,6 +44,7 @@ public class PositionManager : MonoBehaviour
     {
         RestClient.Get(string.Format("{0}/config/{1}", Constants.APIHostname, MyPlayerID)).Then(response =>
         {
+            Debug.Log(response.Text);
             int[] newData = remoteIdxToLocalIdx(StringToIntArray(response.Text));
             Debug.Log(string.Format("Network local result: [{0}, {1}, {2}]", newData[0], newData[1], newData[2]));
 
@@ -52,7 +53,7 @@ public class PositionManager : MonoBehaviour
                 PositionData = newData;
                 DataChanged = true;
             }
-        }).Catch(exception => { });
+        }).Catch(exception => { Debug.LogException(exception); });
     }
 
     public int[] remoteIdxToLocalIdx(int[] remotePosition)
