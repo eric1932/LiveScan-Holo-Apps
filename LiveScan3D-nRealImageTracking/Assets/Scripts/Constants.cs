@@ -9,17 +9,22 @@ public class Constants : MonoBehaviour
     public static readonly string LANTUF = "192.168.10.14";
     public static readonly string LANEsxi = "192.168.10.10";
 
+    public static readonly string APIHostname = "https://holo3d.deta.dev";
+
     public static string serverHostName =
 #if UNITY_EDITOR
-        //localhost
-        LANEsxi
+        localhost
+        //LANEsxi
 #else
         VultrSG
         //LANEsxi
+        //LANTUF
 #endif
         ;
 
     public static int DefaultPort = 48002;
+
+    public static int NumClients = 3;
 
     public static int ArrayCount = 0;
     public static readonly List<float[]> Vertices = new List<float[]>();

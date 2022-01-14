@@ -10,22 +10,22 @@ public class MultiRenderer : MonoBehaviour
     public GameObject pointCloudElem;
     public Material pointCloudMaterial;
     private readonly List<List<GameObject>> elemsList = new List<List<GameObject>>();
-    public static readonly List<Transform> playerTransformList = new List<Transform>();
+    [HideInInspector]
+    public static List<Transform> playerTransformList = new List<Transform>();
 
     public static MultiRenderer instance = null;
 
     int iterCount = 0;
-    public static readonly int NumClients = 3;  // TODO move to Constants
 
-    public static readonly bool[] flip = new bool[NumClients];
-    private static readonly bool[] flop = new bool[NumClients];
+    public static readonly bool[] flip = new bool[Constants.NumClients];
+    private static readonly bool[] flop = new bool[Constants.NumClients];
     //private static readonly float[] lastUpdateTime = new float[NumClients];
 
     void Start()
     {
         instance = this;
 
-        for (int i = 0; i < NumClients; i++)
+        for (int i = 0; i < Constants.NumClients; i++)
         {
             elemsList.Add(new List<GameObject>());
             playerTransformList.Add(null);
@@ -80,7 +80,7 @@ public class MultiRenderer : MonoBehaviour
         finally
         {
             iterCount += 1;
-            if (iterCount >= NumClients)  // range within 0 1 2
+            if (iterCount >= Constants.NumClients)  // range within 0 1 2
                 iterCount = 0;
         }
     }
@@ -158,25 +158,33 @@ public class MultiRenderer : MonoBehaviour
     public float[] TransPoseVector(float[] v, int multiID)
     {
         float[] outVector = v;
-        Transform targetTransform = playerTransformList[multiID];
+        Transform targetTransform = playerTransformList[PositionManager.PositionData[multiID]];
         for (int i = 0; i < v.Length / 3; i++)
             for (int j = 0; j < 3; j++)
                 outVector[i * 3 + j] += targetTransform.position[j] + targetTransform.localPosition[j];
         return outVector;
     }
 
-    static void SwapTwoItems(int a, int b)
-    {
-        Transform transformA = playerTransformList[a];
-        Transform transformB = playerTransformList[b];
-        if (transformA != null && transformB != null)
-            (playerTransformList[a], playerTransformList[b]) = (playerTransformList[b], playerTransformList[a]);
-        else if (transformA == null && transformB == null)
-            return;
-        // fill data to prevent null
-        else if (transformA == null)
-            playerTransformList[a] = transformB;
-        else
-            playerTransformList[b] = transformA;
-    }
+    //    public static void SwapTwoItems(int a, int b)
+    //    {
+    //        Transform transformA = playerTransformList[a];
+    //        Transform transformB = playerTransformList[b];
+    //        if (transformA != null && transformB != null)
+    //            (playerTransformList[a], playerTransformList[b]) = (playerTransformList[b], playerTransformList[a]);
+    //        else if (transformA == null && transformB == null)
+    //            return;
+    //        // fill data to prevent null
+    //        else if (transformA == null)
+    //            playerTransformList[a] = transformB;
+    //        else
+    //            playerTransformList[b] = transformA;
+    //    }
+
+    //    public static void SetTransformByIndexList(int[] indexList)
+    //    {
+    //        List<Transform> newVal = new List<Transform>();
+    //        foreach (int i in indexList)
+    //            newVal.Add(playerTransformList[i]);
+    //        playerTransformList = newVal;
+    //    }
 }
