@@ -9,7 +9,7 @@ public class Constants : MonoBehaviour
     public static readonly string LANTUF = "192.168.10.14";
     public static readonly string LANEsxi = "192.168.10.10";
 
-    public static readonly string APIHostname = "https://holo3d.deta.dev";
+    public static readonly string APIHostname = "http://139.180.141.82:8000";
 
     public static string serverHostName =
 #if UNITY_EDITOR
