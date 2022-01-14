@@ -44,8 +44,10 @@ public class PointCloudReceiver : MonoBehaviour
     {
         pointCloudRenderer = GetComponent<PointCloudRenderer>();
 
-        position = gameObject.transform.position;
-        localPosition = gameObject.transform.localPosition;
+        // store transform
+        position = transform.position;
+        localPosition = transform.localPosition;
+        MultiRenderer.playerTransformList[multiID] = transform;
 
         receiverThread = new Thread(ThreadReceiver);
         receiverThread.Start();
@@ -90,7 +92,9 @@ public class PointCloudReceiver : MonoBehaviour
                 Constants.Vertices[multiID] = null;
                 Constants.Colors[multiID] = null;
 
-                (GameObject.Find("/MultiRenderer").GetComponent<MultiRenderer>()).Render(null, null, multiID);
+                //(GameObject.Find("/MultiRenderer").GetComponent<MultiRenderer>()).Render(null, null, multiID);
+                if (MultiRenderer.instance != null)
+                    MultiRenderer.instance.Render(null, null, multiID);
 
                 Debug.Log(string.Format("Set multID={0} to null", multiID));
             }
@@ -250,19 +254,6 @@ public class PointCloudReceiver : MonoBehaviour
     }
 #endif
 
-    float[] TransPoseVector(float[] v)  // TODO
-    {
-        float[] outVector = v;
-        for (int i = 0; i < v.Length / 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                outVector[i * 3 + j] += position[j] + localPosition[j];
-            }
-        }
-        return outVector;
-    }
-
     void ThreadReceiver()
     {
         while (true)
@@ -302,7 +293,6 @@ public class PointCloudReceiver : MonoBehaviour
                     {
                         if (vertices != null)  // TODO needed?
                         {
-                            vertices = TransPoseVector(vertices);
                             Constants.Vertices[multiID] = vertices;
                             Constants.Colors[multiID] = colors;
                             // invalidate buffers

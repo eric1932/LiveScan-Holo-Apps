@@ -9,11 +9,13 @@ public class MultiRenderer : MonoBehaviour
     public float pointSize = 0.005f;
     public GameObject pointCloudElem;
     public Material pointCloudMaterial;
+    private readonly List<List<GameObject>> elemsList = new List<List<GameObject>>();
+    public static readonly List<Transform> playerTransformList = new List<Transform>();
 
-    readonly List<List<GameObject>> elemsList = new List<List<GameObject>>();
+    public static MultiRenderer instance = null;
 
     int iterCount = 0;
-    public static readonly int NumClients = 3;
+    public static readonly int NumClients = 3;  // TODO move to Constants
 
     public static readonly bool[] flip = new bool[NumClients];
     private static readonly bool[] flop = new bool[NumClients];
@@ -21,8 +23,13 @@ public class MultiRenderer : MonoBehaviour
 
     void Start()
     {
+        instance = this;
+
         for (int i = 0; i < NumClients; i++)
+        {
             elemsList.Add(new List<GameObject>());
+            playerTransformList.Add(null);
+        }
 
         UpdatePointSize();
     }
@@ -63,6 +70,8 @@ public class MultiRenderer : MonoBehaviour
             if (Constants.Vertices.Count > iterCount && flip[iterCount] != flop[iterCount])
             {
                 Render(Constants.Vertices[iterCount], Constants.Colors[iterCount], iterCount);
+
+                // update flip-flop flag
                 flop[iterCount] = !flop[iterCount];
 
                 //lastUpdateTime[iterCount] = Time.time;
@@ -83,6 +92,8 @@ public class MultiRenderer : MonoBehaviour
 
     public void Render(float[] arrVertices, byte[] arrColors, int elemsIdx)
     {
+        arrVertices = TransPoseVector(arrVertices, elemsIdx);  // transpose
+
         int nPoints, nChunks;
         if (arrVertices == null || arrColors == null)
         {
@@ -142,5 +153,30 @@ public class MultiRenderer : MonoBehaviour
             Destroy(elemsList[elemsIdx][0]);
             elemsList[elemsIdx].Remove(elemsList[elemsIdx][0]);
         }
+    }
+
+    public float[] TransPoseVector(float[] v, int multiID)
+    {
+        float[] outVector = v;
+        Transform targetTransform = playerTransformList[multiID];
+        for (int i = 0; i < v.Length / 3; i++)
+            for (int j = 0; j < 3; j++)
+                outVector[i * 3 + j] += targetTransform.position[j] + targetTransform.localPosition[j];
+        return outVector;
+    }
+
+    static void SwapTwoItems(int a, int b)
+    {
+        Transform transformA = playerTransformList[a];
+        Transform transformB = playerTransformList[b];
+        if (transformA != null && transformB != null)
+            (playerTransformList[a], playerTransformList[b]) = (playerTransformList[b], playerTransformList[a]);
+        else if (transformA == null && transformB == null)
+            return;
+        // fill data to prevent null
+        else if (transformA == null)
+            playerTransformList[a] = transformB;
+        else
+            playerTransformList[b] = transformA;
     }
 }
