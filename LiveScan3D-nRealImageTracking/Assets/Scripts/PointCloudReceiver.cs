@@ -95,8 +95,8 @@ public class PointCloudReceiver : MonoBehaviour
                 Debug.Log(string.Format("Set multID={0} to null", multiID));
             }
 
-            if (socket != null)
-                socket.Close();
+            //if (socket != null)
+            //    socket.Close();
 
             Destroy(gameObject);
         }
@@ -124,8 +124,8 @@ public class PointCloudReceiver : MonoBehaviour
 
             // eric code
             // shorten socket timeout
-            socket.ReceiveTimeout = 500;
-            socket.SendTimeout = 500;
+            //socket.ReceiveTimeout = 500;
+            //socket.SendTimeout = 500;
             //socket.NoDelay = true;
 #endif
             bConnected = true;
@@ -188,9 +188,15 @@ public class PointCloudReceiver : MonoBehaviour
         byte[] buffer0 = new byte[4];
         {
             result = socket.GetStream().ReadAsync(buffer0, 0, 4);
-            success = result.AsyncWaitHandle.WaitOne(3000);
+            success = result.AsyncWaitHandle.WaitOne(5000);
             if (!success)
-                throw new Exception("pointcloud transmission error: get data length");
+            {
+                //throw new Exception("pointcloud transmission error: get data length");
+
+                lVertices = null;
+                lColors = null;
+                return false;
+            }
         }
         int nPointsToRead = BitConverter.ToInt32(buffer0, 0);
 
@@ -208,11 +214,12 @@ public class PointCloudReceiver : MonoBehaviour
             //nBytesRead += socket.GetStream().Read(buffer, nBytesRead, Math.Min(nBytesToRead - nBytesRead, 64000));
 
             result = socket.GetStream().ReadAsync(buffer, nBytesRead, Math.Min(nBytesToRead - nBytesRead, 64000));
-            success = result.AsyncWaitHandle.WaitOne(3000);
+            success = result.AsyncWaitHandle.WaitOne(5000);
             if (!success)
-                throw new Exception("pointcloud transmission error: receive verts");
+                //throw new Exception("pointcloud transmission error: receive verts");
+                return false;
             else
-                nBytesRead += ((System.Threading.Tasks.Task<int>) result).Result;
+                nBytesRead += ((System.Threading.Tasks.Task<int>)result).Result;
         }
 
         System.Buffer.BlockCopy(buffer, 0, lShortVertices, 0, nBytesToRead);
@@ -229,11 +236,12 @@ public class PointCloudReceiver : MonoBehaviour
             //nBytesRead += socket.GetStream().Read(buffer, nBytesRead, Math.Min(nBytesToRead - nBytesRead, 64000));
 
             result = socket.GetStream().ReadAsync(buffer, nBytesRead, Math.Min(nBytesToRead - nBytesRead, 64000));
-            success = result.AsyncWaitHandle.WaitOne(3000);
+            success = result.AsyncWaitHandle.WaitOne(5000);
             if (!success)
-                throw new Exception("pointcloud transmission error: receive colors");
+                //throw new Exception("pointcloud transmission error: receive colors");
+                return false;
             else
-                nBytesRead += ((System.Threading.Tasks.Task<int>) result).Result;
+                nBytesRead += ((System.Threading.Tasks.Task<int>)result).Result;
         }
 
         System.Buffer.BlockCopy(buffer, 0, lColors, 0, nBytesToRead);
@@ -288,17 +296,26 @@ public class PointCloudReceiver : MonoBehaviour
                 if (ReceiveFrame(out vertices, out colors))
 #endif
                 {
-                    //Debug.Log("Frame received");
                     pendingRender = true;
 
                     if (multiID != -1 && multiID < Constants.ArrayCount)
                     {
-                        vertices = TransPoseVector(vertices);
-                        Constants.Vertices[multiID] = vertices;
-                        Constants.Colors[multiID] = colors;
+                        if (vertices != null)  // TODO needed?
+                        {
+                            vertices = TransPoseVector(vertices);
+                            Constants.Vertices[multiID] = vertices;
+                            Constants.Colors[multiID] = colors;
+                            // invalidate buffers
+                            vertices = null;
+                            colors = null;
 
-                        MultiRenderer.flip[multiID] = !MultiRenderer.flip[multiID];
+                            MultiRenderer.flip[multiID] = !MultiRenderer.flip[multiID];
+                        }
                     }
+                } else
+                {
+                    pendingDestroy = true;
+                    break;
                 }
             }
             catch (Exception e)
@@ -315,8 +332,6 @@ public class PointCloudReceiver : MonoBehaviour
                 // push empty array to flush display
                 if (multiID != -1 && multiID < Constants.ArrayCount)
                 {
-                    //Constants.Vertices[multiID] = new[] { 0f, 0f, 0f };
-                    //Constants.Colors[multiID] = new[] { (byte)0, (byte)0, (byte)0 };
                     Constants.Vertices[multiID] = null;
                     Constants.Colors[multiID] = null;
 

@@ -17,6 +17,7 @@ public class MultiRenderer : MonoBehaviour
 
     public static readonly bool[] flip = new bool[NumClients];
     private static readonly bool[] flop = new bool[NumClients];
+    //private static readonly float[] lastUpdateTime = new float[NumClients];
 
     void Start()
     {
@@ -34,24 +35,45 @@ public class MultiRenderer : MonoBehaviour
             transform.hasChanged = false;
         }
 
+        //Debug.Log(string.Format("[{0}, {1}, {2}]", lastUpdateTime[0], lastUpdateTime[1], lastUpdateTime[2]));
+
         if (Time.smoothDeltaTime >= 0.04)  // 0.016 for 62.5 fps; 0.02 for 50; 0.25 for 40
             return;
 
-        // render ONLY ONE pointcloud each time
-        if (Constants.Vertices.Count > iterCount && flip[iterCount] != flop[iterCount])
+        try
         {
-            //Debug.Log("render");
-            Render(Constants.Vertices[iterCount], Constants.Colors[iterCount], iterCount);
-            flop[iterCount] = !flop[iterCount];
-        }
-        //else if (flip[iterCount] == flop[iterCount])
-        //{
-        //    Debug.Log("save");
-        //}
+            //if (lastUpdateTime[iterCount] + 8000 < Time.time)
+            //{
+            //    // destroy gameobj
+            //    GameObject obj = GameObject.Find("/GameObject(Clone)/PointCloudRenderer1(Clone)");
+            //    if (obj != null)
+            //    {
+            //        DestroyImmediate(obj);
+            //        Debug.LogWarning("Destroy upon MultiRender timeout");
+            //    }
 
-        iterCount += 1;
-        if (iterCount >= NumClients)  // range within 0 1 2
-            iterCount = 0;
+            //    // update time
+            //    lastUpdateTime[iterCount] = Time.time;
+
+            //    // turn into finally
+            //    return;
+            //}
+
+            // render ONLY ONE pointcloud each time
+            if (Constants.Vertices.Count > iterCount && flip[iterCount] != flop[iterCount])
+            {
+                Render(Constants.Vertices[iterCount], Constants.Colors[iterCount], iterCount);
+                flop[iterCount] = !flop[iterCount];
+
+                //lastUpdateTime[iterCount] = Time.time;
+            }  // else save frame; do not update time
+        }
+        finally
+        {
+            iterCount += 1;
+            if (iterCount >= NumClients)  // range within 0 1 2
+                iterCount = 0;
+        }
     }
 
     void UpdatePointSize()
