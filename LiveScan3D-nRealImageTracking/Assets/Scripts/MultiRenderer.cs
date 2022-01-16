@@ -93,7 +93,7 @@ public class MultiRenderer : MonoBehaviour
 
     public void Render(float[] arrVertices, byte[] arrColors, int elemsIdx)
     {
-        arrVertices = TransPoseVector(arrVertices, elemsIdx);  // transpose
+        //arrVertices = TransPoseVector(arrVertices, elemsIdx);  // transpose
 
         int nPoints, nChunks;
         if (arrVertices == null || arrColors == null)
@@ -114,11 +114,18 @@ public class MultiRenderer : MonoBehaviour
             RemoveElems(elemsList[elemsIdx].Count - nChunks, elemsIdx);
 
         int offset = 0;
+        Transform targetTransform = playerTransformList[Array.IndexOf(PositionManager.PositionData, elemsIdx)];
         for (int i = 0; i < nChunks; i++)
         {
             int nPointsToRender = System.Math.Min(maxChunkSize, nPoints - offset);
 
-            ElemRenderer renderer = elemsList[elemsIdx][i].GetComponent<ElemRenderer>();
+            ElemRenderer renderer = elemsList[elemsIdx][i].GetComponent<ElemRenderer>();  // TODO no indexof
+            // update transform; replace TransPoseVector()
+            if (renderer.transform.position != targetTransform.position)
+            {
+                renderer.transform.position = targetTransform.position;
+                renderer.transform.localPosition = targetTransform.localPosition;
+            }
             renderer.UpdateMesh(arrVertices, arrColors, nPointsToRender, offset);
 
             offset += nPointsToRender;
