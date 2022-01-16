@@ -158,6 +158,9 @@ public class MultiRenderer : MonoBehaviour
 
     public float[] TransPoseVector(float[] v, int multiID)
     {
+        if (v == null)
+            return null;
+
         float[] outVector = v;
         // TODO no indexof
         Transform targetTransform = playerTransformList[Array.IndexOf(PositionManager.PositionData, multiID)];
