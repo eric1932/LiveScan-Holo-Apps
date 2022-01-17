@@ -124,7 +124,7 @@ public class MultiRenderer : MonoBehaviour
             if (renderer.transform.position != targetTransform.position)
             {
                 renderer.transform.position = targetTransform.position;
-                renderer.transform.localPosition = targetTransform.localPosition;
+                renderer.transform.rotation = targetTransform.rotation * Quaternion.Euler(-180, 0, 0);  // TODO patch
             }
             renderer.UpdateMesh(arrVertices, arrColors, nPointsToRender, offset);
 
