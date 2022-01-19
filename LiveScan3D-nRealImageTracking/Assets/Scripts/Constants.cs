@@ -15,6 +15,7 @@ public class Constants : MonoBehaviour
 #if UNITY_EDITOR
         localhost
         //LANEsxi
+        //VultrSG
 #else
         VultrSG
         //LANEsxi

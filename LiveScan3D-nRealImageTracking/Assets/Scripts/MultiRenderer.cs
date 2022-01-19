@@ -93,6 +93,7 @@ public class MultiRenderer : MonoBehaviour
 
     public void Render(float[] arrVertices, byte[] arrColors, int elemsIdx)
     {
+        // NOTE: this call is SEVERELY COSTLY; do not use it
         //arrVertices = TransPoseVector(arrVertices, elemsIdx);  // transpose
 
         int nPoints, nChunks;
