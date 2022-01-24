@@ -1,0 +1,147 @@
+fileFormatVersion: 2
+guid: 78621d86b8b17ee48b1cbf689516db08
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Prop_01
+    100004: Prop_02
+    100006: Prop_03
+    100008: Prop_04
+    100010: Prop_05
+    100012: Props_Stand_01
+    100014: Props_Stand_02
+    100016: Props_Stand_03
+    100018: Props_Stand_04
+    100020: Props_Stand_05
+    400000: //RootNode
+    400002: Prop_01
+    400004: Prop_02
+    400006: Prop_03
+    400008: Prop_04
+    400010: Prop_05
+    400012: Props_Stand_01
+    400014: Props_Stand_02
+    400016: Props_Stand_03
+    400018: Props_Stand_04
+    400020: Props_Stand_05
+    2100000: Props
+    2100002: Props_Wood_Base
+    2100004: 'Material #2104404830'
+    2100006: GrassPlate
+    2300000: Prop_01
+    2300002: Prop_02
+    2300004: Prop_03
+    2300006: Prop_04
+    2300008: Prop_05
+    2300010: Props_Stand_01
+    2300012: Props_Stand_02
+    2300014: Props_Stand_03
+    2300016: Props_Stand_04
+    2300018: Props_Stand_05
+    3300000: Prop_01
+    3300002: Prop_02
+    3300004: Prop_03
+    3300006: Prop_04
+    3300008: Prop_05
+    3300010: Props_Stand_01
+    3300012: Props_Stand_02
+    3300014: Props_Stand_03
+    3300016: Props_Stand_04
+    3300018: Props_Stand_05
+    4300000: Prop_04
+    4300002: Props_Stand_04
+    4300004: Prop_01
+    4300006: Props_Stand_01
+    4300008: Props_Stand_05
+    4300010: Prop_03
+    4300012: Props_Stand_03
+    4300014: Prop_02
+    4300016: Props_Stand_02
+    4300018: Prop_05
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 1
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
