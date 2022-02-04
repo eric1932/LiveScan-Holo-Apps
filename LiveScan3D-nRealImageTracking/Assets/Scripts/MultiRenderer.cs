@@ -45,7 +45,7 @@ public class MultiRenderer : MonoBehaviour
 
         //Debug.Log(string.Format("[{0}, {1}, {2}]", lastUpdateTime[0], lastUpdateTime[1], lastUpdateTime[2]));
 
-        if (Time.smoothDeltaTime >= 0.1)  // 0.016 for 62.5 fps; 0.02 for 50; 0.25 for 40
+        if (Time.smoothDeltaTime >= 0.05)  // 0.016 for 62.5 fps; 0.02 for 50; 0.25 for 40
             return;
 
         try
