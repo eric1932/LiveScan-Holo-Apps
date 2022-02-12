@@ -7,7 +7,7 @@ using System.Linq;
 
 public class PositionManager : MonoBehaviour
 {
-    public int MyPlayerID = 0;
+    public int MyPlayerID = Constants.MyOnlineID;
     [HideInInspector]
     public static int[] PositionData { get; private set; } = new int[] { 0, 1, 2 };  // default value in case of net err
     [HideInInspector]

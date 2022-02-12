@@ -20,7 +20,8 @@ public class MyConnectionHandler : MonoBehaviour
     private float smallCheckPeriod = 0.5f;
     private GameObject instance = null;
 
-    public int port = Constants.DefaultPort;
+    private int port = -1;
+    public int multiID = -1;
 
     //private TimeSpan timeout = TimeSpan.FromMilliseconds(100);
 
@@ -29,6 +30,8 @@ public class MyConnectionHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        port = Constants.GetPortByMultiID(multiID);  // TODO single mode cannot run
+
         //TextSystemConnecting = GameObject.Find("/MyTextButtonSystemConnecting");
 
         if (gameObject.transform.parent.transform.parent == null  // differ Prefab-as-param & cloned instance

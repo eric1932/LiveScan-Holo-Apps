@@ -19,7 +19,7 @@ public class PointCloudReceiver : MonoBehaviour
 #else
     TcpClient socket = null;
 #endif
-    public int port = 48002;
+    private int port = -1;
 
     PointCloudRenderer pointCloudRenderer;
     bool bReadyForNextFrame = true;
@@ -42,6 +42,8 @@ public class PointCloudReceiver : MonoBehaviour
 
     void Start()
     {
+        port = Constants.GetPortByMultiID(multiID);  // TODO single mode cannot run
+
         pointCloudRenderer = GetComponent<PointCloudRenderer>();
 
         // store transform

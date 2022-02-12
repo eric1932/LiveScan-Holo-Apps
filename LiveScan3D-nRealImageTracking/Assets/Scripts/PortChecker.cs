@@ -6,7 +6,7 @@ using System.Threading;
 
 public class PortChecker : MonoBehaviour
 {
-    public static int[] PortChecklist = { 48002, 48004, 48006 };
+    public static int[] PortChecklist = null;
     public static bool[] PortStatus { get; private set; } = null;
     private static Thread[] CheckerThreadList = null;
     private static Dictionary<int, int> map = new Dictionary<int, int>();  // map port # to idx
@@ -14,6 +14,7 @@ public class PortChecker : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        PortChecklist = Constants.GetPortList();
         PortStatus = new bool[PortChecklist.Length];
         CheckerThreadList = new Thread[PortChecklist.Length];
         for (int i = 0; i < PortChecklist.Length; ++i)
