@@ -7,7 +7,7 @@ using System.Linq;
 
 public class PositionManager : MonoBehaviour
 {
-    public int MyPlayerID = Constants.MyOnlineID;
+    private int MyPlayerID = Constants.MyOnlineID;
     [HideInInspector]
     public static int[] PositionData { get; private set; } = new int[] { 0, 1, 2 };  // default value in case of net err
     [HideInInspector]
@@ -27,7 +27,12 @@ public class PositionManager : MonoBehaviour
             if (remoteID != MyPlayerID)
                 map[remoteID] = localIndex++;
 
-        //fetchOnlineDataAndUpdatePosition();
+        fetchOnlineData();
+
+        // debug
+        // print Dict<int, int>
+        //var lines = map.Select(kvp => kvp.Key + ": " + kvp.Value.ToString());
+        //Debug.Log(string.Join(Environment.NewLine, lines));
     }
 
     // Update is called once per frame
@@ -44,9 +49,9 @@ public class PositionManager : MonoBehaviour
     {
         RestClient.Get(string.Format("{0}/config/{1}", Constants.APIHostname, MyPlayerID)).Then(response =>
         {
-            Debug.Log(response.Text);
+            Debug.Log(string.Format("API position return: {0}\n", response.Text));
             int[] newData = remoteIdxToLocalIdx(StringToIntArray(response.Text));
-            Debug.Log(string.Format("Network local result: [{0}, {1}, {2}]", newData[0], newData[1], newData[2]));
+            Debug.Log(string.Format("Translated position: [{0}, {1}, {2}]\n", newData[0], newData[1], newData[2]));
 
             if (!Enumerable.SequenceEqual(PositionData, newData))
             {
