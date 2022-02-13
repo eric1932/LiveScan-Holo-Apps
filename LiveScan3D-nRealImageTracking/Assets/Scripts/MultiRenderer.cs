@@ -12,7 +12,7 @@ public class MultiRenderer : MonoBehaviour
     public Material pointCloudMaterial;
     private readonly List<List<GameObject>> elemsList = new List<List<GameObject>>();
     [HideInInspector]
-    public static List<Transform> playerTransformList = new List<Transform>();
+    public static List<Pose> playerPoseList = new List<Pose>();
 
     public static MultiRenderer instance = null;
 
@@ -29,7 +29,7 @@ public class MultiRenderer : MonoBehaviour
         for (int i = 0; i < Constants.NumClients; i++)
         {
             elemsList.Add(new List<GameObject>());
-            playerTransformList.Add(null);
+            playerPoseList.Add(new Pose());
         }
 
         UpdatePointSize();
@@ -115,17 +115,17 @@ public class MultiRenderer : MonoBehaviour
             RemoveElems(elemsList[elemsIdx].Count - nChunks, elemsIdx);
 
         int offset = 0;
-        Transform targetTransform = playerTransformList[Array.IndexOf(PositionManager.PositionData, elemsIdx)];
+        Pose targetPose = playerPoseList[Array.IndexOf(PositionManager.PositionData, elemsIdx)];
         for (int i = 0; i < nChunks; i++)
         {
             int nPointsToRender = System.Math.Min(maxChunkSize, nPoints - offset);
 
             ElemRenderer renderer = elemsList[elemsIdx][i].GetComponent<ElemRenderer>();  // TODO no indexof
             // update transform; replace TransPoseVector()
-            if (renderer.transform.position != targetTransform.position)
+            if (renderer.transform.position != targetPose.position)
             {
-                renderer.transform.position = targetTransform.position;
-                renderer.transform.rotation = targetTransform.rotation * Quaternion.Euler(-180, 0, 0);  // TODO patch
+                renderer.transform.position = targetPose.position;
+                renderer.transform.rotation = targetPose.rotation * Quaternion.Euler(-180, 0, 0);  // TODO patch
             }
             renderer.UpdateMesh(arrVertices, arrColors, nPointsToRender, offset);
 
@@ -171,10 +171,10 @@ public class MultiRenderer : MonoBehaviour
 
         float[] outVector = v;
         // TODO no indexof
-        Transform targetTransform = playerTransformList[Array.IndexOf(PositionManager.PositionData, multiID)];
+        Pose targetPose = playerPoseList[Array.IndexOf(PositionManager.PositionData, multiID)];
         for (int i = 0; i < v.Length / 3; i++)
             for (int j = 0; j < 3; j++)
-                outVector[i * 3 + j] += targetTransform.position[j] + targetTransform.localPosition[j];
+                outVector[i * 3 + j] += targetPose.position[j];
         return outVector;
     }
 

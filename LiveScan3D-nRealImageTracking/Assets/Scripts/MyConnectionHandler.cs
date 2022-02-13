@@ -52,6 +52,13 @@ public class MyConnectionHandler : MonoBehaviour
         {
             Debug.Log("fake MCH object instantiated");
         }
+
+
+        // save position to multirenderer
+        Pose thisPose = new Pose();
+        thisPose.position = pointCloudRenderer.transform.position;  // + transform.localPosition;  // adding this will not get the right outcome
+        thisPose.rotation = pointCloudRenderer.transform.rotation;
+        MultiRenderer.playerPoseList[multiID] = thisPose;
     }
 
     // Update is called once per frame

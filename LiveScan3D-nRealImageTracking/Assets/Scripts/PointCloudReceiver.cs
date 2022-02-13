@@ -49,7 +49,10 @@ public class PointCloudReceiver : MonoBehaviour
         // store transform
         position = transform.position;
         localPosition = transform.localPosition;
-        MultiRenderer.playerTransformList[multiID] = transform;
+        //Pose thisPose = new Pose();
+        //thisPose.position = transform.position;  // + transform.localPosition;  // adding this will not get the right outcome
+        //thisPose.rotation = transform.rotation;
+        //MultiRenderer.playerPoseList[multiID] = thisPose;
 
         receiverThread = new Thread(ThreadReceiver);
         receiverThread.Start();
