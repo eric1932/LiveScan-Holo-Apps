@@ -4,6 +4,16 @@ using UnityEngine;
 
 public class Constants : MonoBehaviour
 {
+    /**
+     * Client specific
+     */
+    public static readonly int NumClients = 3;  // DONT CHANGE THIS
+
+    public static readonly int MyOnlineID = 0;  // For example, if NumClients=3, then this can range from [0...3]
+
+    /**
+     * IP (room) related settings
+     */
     public static readonly string localhost = "127.0.0.1";
     public static readonly string VultrSG_HM0001 = "139.180.141.82";
     public static readonly string LANTUF = "192.168.10.14";
@@ -13,9 +23,9 @@ public class Constants : MonoBehaviour
 
     public static string serverHostName =
 #if UNITY_EDITOR
-        localhost
+        //localhost
         //LANEsxi
-        //VultrSG_HM0001
+        VultrSG_HM0001
 #else
         VultrSG_HM0001
         //LANEsxi
@@ -23,12 +33,15 @@ public class Constants : MonoBehaviour
 #endif
         ;
 
+    /**
+     * other variables & functions
+     */
     public static readonly int DefaultPort = 48002;  // unused
 
-    public static readonly int NumClients = 3;
-    public static readonly int MyOnlineID = 0;  // TODO change this
-
-    public static int ArrayCount = 0;
+    /**
+     * Things you shouldn't touch
+     */
+    public static int ArrayCount = 0;  // TODO redundant
     public static readonly List<float[]> Vertices = new List<float[]>();
     public static readonly List<byte[]> Colors = new List<byte[]>();
 
