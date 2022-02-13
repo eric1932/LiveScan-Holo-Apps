@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections;
@@ -43,6 +43,8 @@ public class PointCloudReceiver : MonoBehaviour
     void Start()
     {
         port = Constants.GetPortByMultiID(multiID);  // TODO single mode cannot run
+
+        Debug.Log(string.Format("MultiID client {0} is trying to connect to server {1} : port {2}\n", multiID, Constants.serverHostName, port));
 
         pointCloudRenderer = GetComponent<PointCloudRenderer>();
 
@@ -309,6 +311,7 @@ public class PointCloudReceiver : MonoBehaviour
                     }
                 } else
                 {
+                    Debug.Log("PointCloudReceiver:ReceiveFrame() returns an invalid result");
                     pendingDestroy = true;
                     break;
                 }

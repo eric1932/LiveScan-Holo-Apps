@@ -43,10 +43,11 @@ public class MultiRenderer : MonoBehaviour
             transform.hasChanged = false;
         }
 
-        //Debug.Log(string.Format("[{0}, {1}, {2}]", lastUpdateTime[0], lastUpdateTime[1], lastUpdateTime[2]));
-
         if (Time.smoothDeltaTime >= 0.033)  // 0.016 for 62.5 fps; 0.02 for 50; 0.25 for 40
+        {
+            //Debug.Log("Skip frame");
             return;
+        }
 
         try
         {
