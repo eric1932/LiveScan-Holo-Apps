@@ -165,19 +165,19 @@ public class MultiRenderer : MonoBehaviour
         }
     }
 
-    public float[] TransPoseVector(float[] v, int multiID)
-    {
-        if (v == null)
-            return null;
+    //public float[] TransPoseVector(float[] v, int multiID)
+    //{
+    //    if (v == null)
+    //        return null;
 
-        float[] outVector = v;
-        // TODO no indexof
-        Pose targetPose = playerPoseList[Array.IndexOf(PositionManager.PositionData, multiID)];
-        for (int i = 0; i < v.Length / 3; i++)
-            for (int j = 0; j < 3; j++)
-                outVector[i * 3 + j] += targetPose.position[j];
-        return outVector;
-    }
+    //    float[] outVector = v;
+    //    // TODO no indexof
+    //    Pose targetPose = playerPoseList[Array.IndexOf(PositionManager.PositionData, multiID)];
+    //    for (int i = 0; i < v.Length / 3; i++)
+    //        for (int j = 0; j < 3; j++)
+    //            outVector[i * 3 + j] += targetPose.position[j];
+    //    return outVector;
+    //}
 
     //    public static void SwapTwoItems(int a, int b)
     //    {
