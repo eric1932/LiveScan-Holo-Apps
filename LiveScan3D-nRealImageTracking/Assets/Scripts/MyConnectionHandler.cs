@@ -56,8 +56,8 @@ public class MyConnectionHandler : MonoBehaviour
 
         // save position to multirenderer
         Pose thisPose = new Pose();
-        thisPose.position = pointCloudRenderer.transform.position;  // + transform.localPosition;  // adding this will not get the right outcome
-        thisPose.rotation = pointCloudRenderer.transform.rotation;
+        thisPose.position = pointCloudRenderer.transform.localPosition;
+        thisPose.rotation = pointCloudRenderer.transform.localRotation;
         MultiRenderer.playerPoseList[multiID] = thisPose;
         Debug.Log(string.Format("Position for MultID {0} saved: position {1}, rotation {2}", multiID, thisPose.position, thisPose.rotation));
     }
