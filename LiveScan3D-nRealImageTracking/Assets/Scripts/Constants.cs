@@ -15,19 +15,19 @@ public class Constants : MonoBehaviour
      * IP (room) related settings
      */
     public static readonly string localhost = "127.0.0.1";
-    public static readonly string VultrSG_HM0001 = "139.180.141.82";
+    public static readonly string HM_CHN_0001 = "167.179.78.238";
     public static readonly string LANTUF = "192.168.10.14";
     public static readonly string LANEsxi = "192.168.10.10";
 
-    public static readonly string APIHostname = "http://139.180.141.82:8000";
+    public static readonly string APIHostname = "http://167.179.78.238:8000";
 
     public static string serverHostName =
 #if UNITY_EDITOR
         //localhost
         //LANEsxi
-        VultrSG_HM0001
+        HM_CHN_0001
 #else
-        VultrSG_HM0001
+        HM_CHN_0001
         //LANEsxi
         //LANTUF
 #endif
