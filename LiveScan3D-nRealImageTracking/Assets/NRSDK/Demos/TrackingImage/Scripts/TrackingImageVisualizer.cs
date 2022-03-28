@@ -70,11 +70,13 @@ namespace NRKernal.NRExamples
 */
 
         // MY mod
-                public GameObject Cube;
-                public GameObject AgoraVoice;
+        public GameObject Cube;
+        public GameObject AgoraVoice;
 
-        // Debug
-#if UNITY_EDITOR
+        
+// NOTE: Now want this Visualizer to immediately propagate elements & destroy self
+//       FOR ALL PLATFORMS
+//#if UNITY_EDITOR
         public void Start()
         {
             // Add to root of scene instead of setting as child
@@ -84,28 +86,28 @@ namespace NRKernal.NRExamples
             //Cube.SetActive(true);
             Debug.Log("Cube Set Active");
         }
-#else  // Image is not accessible in UNITY_EDITOR, should NOT exec code below
-        public void Update()
-        {
-            // Want the imperfect image tracking here
-            if (Image == null /*|| Image.GetTrackingState() != TrackingState.Tracking*/)
-            {
-                // Cube.SetActive(false);
-                return;
-            }
-            else
-            {
-                var imageCenter = Image.GetCenterPose();
-                // same as Start()
-                Instantiate(Cube, imageCenter.position, imageCenter.rotation);
-                Instantiate(AgoraVoice, Vector3.zero, Quaternion.identity);
-                Destroy(gameObject);
-                //transform.position = imageCenter.position + new Vector3(0, 0, 2f);
-                //transform.rotation = imageCenter.rotation;
-                //Cube.SetActive(true);
-                return;
-            }
-        }
-#endif
+//#else  // Image is not accessible in UNITY_EDITOR, should NOT exec code below
+//        public void Update()
+//        {
+//            // Want the imperfect image tracking here
+//            if (Image == null /*|| Image.GetTrackingState() != TrackingState.Tracking*/)
+//            {
+//                // Cube.SetActive(false);
+//                return;
+//            }
+//            else
+//            {
+//                var imageCenter = Image.GetCenterPose();
+//                // same as Start()
+//                Instantiate(Cube, imageCenter.position, imageCenter.rotation);
+//                Instantiate(AgoraVoice, Vector3.zero, Quaternion.identity);
+//                Destroy(gameObject);
+//                //transform.position = imageCenter.position + new Vector3(0, 0, 2f);
+//                //transform.rotation = imageCenter.rotation;
+//                //Cube.SetActive(true);
+//                return;
+//            }
+//        }
+//#endif
     }
 }
