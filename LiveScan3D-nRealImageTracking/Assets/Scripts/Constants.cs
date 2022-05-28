@@ -15,20 +15,19 @@ public class Constants : MonoBehaviour
      * IP (room) related settings
      */
     public static readonly string localhost = "127.0.0.1";
-    public static readonly string HM_CHN_0001 = "167.179.78.238";
-    public static readonly string HM_CHN_0002 = "8.134.85.55";
+    public static readonly string HM_CHN_0001 = "45.77.176.88";
     public static readonly string LANTUF = "192.168.10.14";
     public static readonly string LANEsxi = "192.168.10.10";
 
-    public static readonly string APIHostname = "http://8.134.85.55:8000";
+    public static readonly string APIHostname = "http://45.77.176.88:8000";
 
     public static string serverHostName =
 #if UNITY_EDITOR
         //localhost
         //LANEsxi
-        HM_CHN_0002
+        HM_CHN_0001
 #else
-        HM_CHN_0002
+        HM_CHN_0001
         //LANEsxi
         //LANTUF
 #endif
