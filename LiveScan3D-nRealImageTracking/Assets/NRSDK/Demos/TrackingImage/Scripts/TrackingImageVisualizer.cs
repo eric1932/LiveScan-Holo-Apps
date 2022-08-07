@@ -71,7 +71,6 @@ namespace NRKernal.NRExamples
 
         // MY mod
         public GameObject Cube;
-        public GameObject AgoraVoice;
 
         
 // NOTE: Now want this Visualizer to immediately propagate elements & destroy self
@@ -81,7 +80,6 @@ namespace NRKernal.NRExamples
         {
             // Add to root of scene instead of setting as child
             Instantiate(Cube, Vector3.zero, Quaternion.identity);
-            Instantiate(AgoraVoice, Vector3.zero, Quaternion.identity);
             Destroy(gameObject);
             //Cube.SetActive(true);
             Debug.Log("Cube Set Active");
@@ -100,7 +98,6 @@ namespace NRKernal.NRExamples
 //                var imageCenter = Image.GetCenterPose();
 //                // same as Start()
 //                Instantiate(Cube, imageCenter.position, imageCenter.rotation);
-//                Instantiate(AgoraVoice, Vector3.zero, Quaternion.identity);
 //                Destroy(gameObject);
 //                //transform.position = imageCenter.position + new Vector3(0, 0, 2f);
 //                //transform.rotation = imageCenter.rotation;

@@ -43,7 +43,7 @@ public class KeyboardInput : MonoBehaviour {
         //                // Vultr
         //                keyboardDone.Invoke("139.180.141.82");
         //#endif
-        keyboardDone.Invoke(Constants.serverHostName);
+        keyboardDone.Invoke("127.0.0.1");
     }
 
     // void Update ()
