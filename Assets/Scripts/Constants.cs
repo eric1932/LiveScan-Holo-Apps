@@ -18,6 +18,7 @@ public class Constants : MonoBehaviour
     public static readonly string VultrSG_HM0001 = "139.180.141.82";
     public static readonly string LANTUF = "192.168.10.14";
     public static readonly string LANEsxi = "192.168.10.10";
+    public static readonly string HuaweiLAN = "192.168.3.3";
 
     public static readonly string APIHostname = "http://139.180.141.82:8000";
 
@@ -25,9 +26,11 @@ public class Constants : MonoBehaviour
 #if UNITY_EDITOR
         //localhost
         //LANEsxi
-        VultrSG_HM0001
+        //VultrSG_HM0001
+        HuaweiLAN
 #else
-        VultrSG_HM0001
+        HuaweiLAN
+        //VultrSG_HM0001
         //LANEsxi
         //LANTUF
 #endif
